@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name='kucoin-python',
-    version='v0.0.1',
+    version='v0.1.0',
     packages=['kucoin', 'kucoin/base_request', 'kucoin/margin', 'kucoin/market', 'kucoin/trade', 'kucoin/user',
               'kucoin/websocket', 'kucoin/ws_token'],
     license="MIT",
