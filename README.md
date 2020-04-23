@@ -1,1 +1,0 @@
-# kucoin-python-sdk
