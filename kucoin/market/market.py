@@ -363,3 +363,25 @@ class MarketData(KucoinBaseRestApi):
         if kwargs:
             params.update(kwargs)
         return self._request('GET', '/api/v1/prices', params=params)
+
+    def get_server_timestamp(self):
+        """
+        https://docs.kucoin.com/#server-time
+
+        get server timestamp
+        :return: 1570609496404
+        """
+        return self._request('GET', '/api/v1/timestamp', auth=False)
+
+    def get_server_status(self):
+        """
+        https://docs.kucoin.com/#server-time
+
+        get server timestamp
+        :return:
+        {
+          "status": "open",                //open, close, cancelonly
+          "msg":  "upgrade match engine"   //remark for operation
+        }
+        """
+        return self._request('GET', '/api/v1/status', auth=False)

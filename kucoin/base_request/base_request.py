@@ -64,7 +64,6 @@ class KucoinBaseRestApi(object):
                 "Content-Type": "application/json"
             }
         url = urljoin(self.url, uri)
-        print(url)
         if method in ['GET', 'DELETE']:
             response_data = requests.request(method, url, headers=headers, timeout=timeout)
         else:
