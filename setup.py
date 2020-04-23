@@ -5,7 +5,7 @@ from setuptools import setup
 
 
 setup(
-    name='python-kucoin',
+    name='kucoin-python',
     version='v0.0.1',
     packages=['kucoin', 'kucoin/base_request', 'kucoin/margin', 'kucoin/market', 'kucoin/trade', 'kucoin/user',
               'kucoin/websocket', 'kucoin/ws_token'],

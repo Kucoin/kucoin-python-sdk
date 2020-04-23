@@ -30,7 +30,7 @@ or `Generate an API Key in Sandbox <https://sandbox.kucoin.com/account/api>`_ an
 
 .. code:: bash
 
-    pip install python-kucoin
+    pip install kucoin-python
 
 .. code:: python
 
