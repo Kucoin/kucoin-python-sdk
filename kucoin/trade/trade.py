@@ -211,33 +211,6 @@ class TradeData(KucoinBaseRestApi):
 
         return self._request('GET', '/api/v1/orders', params=params)
 
-    def get_order_list(self, **kwargs):
-        """
-        https://docs.kucoin.com/#list-orders
-        :param kwargs: [optional] symbol, side, startAt, endAt, currentPage, pageSize and so on
-        :return:
-        {
-            "currentPage": 1,
-            "pageSize": 50,
-            "totalNum": 1,
-            "totalPage": 1,
-            "items": [{
-                "symbol": "SNOV-ETH",
-                "dealPrice": "0.0000246",
-                "dealValue": "0.018942",
-                "amount": "770",
-                "fee": "0.00001137",
-                "side": "sell",
-                "createdAt": 1540080199
-            }]
-        }
-        """
-        params = {}
-        if kwargs:
-            params.update(kwargs)
-
-        return self._request('GET', '/api/v1/hist-orders', params=params)
-
     def get_recent_orders(self):
         """
         https://docs.kucoin.com/#recent-orders
