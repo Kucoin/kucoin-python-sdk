@@ -216,10 +216,7 @@ class MarketData(KucoinBaseRestApi):
             }
         }
         """
-        params = {
-            'symbol': symbol
-        }
-        return self._request('GET', '/api/v1/market/orderbook/level3', params=params)
+        return self._request('GET', f'/api/v1/market/orderbook/level3?symbol={symbol}')
 
     def get_trade_histories(self, symbol):
         """
