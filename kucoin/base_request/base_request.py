@@ -25,6 +25,7 @@ class KucoinBaseRestApi(object):
         :type passphrase: string
         :param is_sandbox: True sandbox , False  (optional)
         """
+
         if url:
             self.url = url
         else:
@@ -32,6 +33,7 @@ class KucoinBaseRestApi(object):
                 self.url = 'https://openapi-sandbox.kucoin.com'
             else:
                 self.url = 'https://api.kucoin.com'
+
         self.key = key
         self.secret = secret
         self.passphrase = passphrase
