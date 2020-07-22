@@ -37,8 +37,11 @@ or `Generate an API Key in Sandbox <https://sandbox.kucoin.com/account/api>`_ an
     #  MarketData
     from kucoin.client import Market
     client = Market('https://api.kucoin.com')
+    # client = Market()
+
     # or connect to Sandbox
     # client = Market('https://openapi-sandbox.kucoin.com')
+    # client = Market(is_sandbox=True)
 
     # get symbol kline
     klines = client.get_kline('BTC-USDT','1min')
@@ -93,11 +96,12 @@ Websockets
             print(f'Get KCS level3:{msg["data"]}')
 
     # is public
-    # client = WsToken('https://api.kucoin.com')
-    # is private
+    # client = WsToken()
+    #is private
     client = WsToken('https://api.kucoin.com', key='', secret='', passphrase='')
     # is sandbox
     # client = WsToken('https://openapi-sandbox.kucoin.com')
+    # client = WsToken(is_sandbox=True)
     ws_client = await KucoinWsClient.create(None, client, deal_msg, private=False)
     # await ws_client.subscribe('/market/ticker:BTC-USDT,ETH-USDT')
     await ws_client.subscribe('/market/level3:BTC-USDT,ETH-USDT')
