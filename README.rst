@@ -36,11 +36,11 @@ or `Generate an API Key in Sandbox <https://sandbox.kucoin.com/account/api>`_ an
 
     #  MarketData
     from kucoin.client import Market
-    client = Market('https://api.kucoin.com')
+    client = Market(url='https://api.kucoin.com')
     # client = Market()
 
     # or connect to Sandbox
-    # client = Market('https://openapi-sandbox.kucoin.com')
+    # client = Market(url='https://openapi-sandbox.kucoin.com')
     # client = Market(is_sandbox=True)
 
     # get symbol kline
@@ -98,7 +98,7 @@ Websockets
     # is public
     # client = WsToken()
     #is private
-    client = WsToken('https://api.kucoin.com', key='', secret='', passphrase='')
+    client = WsToken(key='', secret='', passphrase='')
     # is sandbox
     # client = WsToken('https://openapi-sandbox.kucoin.com')
     # client = WsToken(is_sandbox=True)
