@@ -92,7 +92,7 @@ Websockets
         async def deal_msg(msg):
             if msg['topic'] == '/market/level3:BTC-USDT':
                 print(msg["data"])
-            elif msg['topic'] == '/market/level3:KCS-USDTs':
+            elif msg['topic'] == '/market/level3:KCS-USDT':
                 print(f'Get KCS level3:{msg["data"]}')
 
         # is public
@@ -104,7 +104,7 @@ Websockets
         # client = WsToken(is_sandbox=True)
         ws_client = await KucoinWsClient.create(None, client, deal_msg, private=False)
         # await ws_client.subscribe('/market/ticker:BTC-USDT,ETH-USDT')
-        await ws_client.subscribe('/market/level3:BTC-USDT,ETH-USDT')
+        await ws_client.subscribe('/market/level3:BTC-USDT,KCS-USDT')
         while True:
             await asyncio.sleep(60, loop=loop)
 
