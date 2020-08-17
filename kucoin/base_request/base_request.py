@@ -13,7 +13,7 @@ from urllib.parse import urljoin
 
 class KucoinBaseRestApi(object):
 
-    def __init__(self, url='', key='', secret='', passphrase='', is_sandbox=False):
+    def __init__(self, key='', secret='', passphrase='', is_sandbox=False, url=''):
         """
         https://docs.kucoin.com
 
