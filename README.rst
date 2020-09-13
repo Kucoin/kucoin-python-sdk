@@ -55,7 +55,7 @@ or `Generate an API Key in Sandbox <https://sandbox.kucoin.com/account/api>`_ an
 
     # Trade
     from kucoin.client import Trade
-    client = Trade(api_key, api_secret, api_passphrase)
+    client = Trade(key='', secret='', passphrase='', is_sandbox=False, url='')
 
     # or connect to Sandbox
     # client = Trade(api_key, api_secret, api_passphrase, is_sandbox=True)
@@ -98,9 +98,8 @@ Websockets
         # is public
         # client = WsToken()
         #is private
-        client = WsToken(key='', secret='', passphrase='')
+        client = WsToken(key='', secret='', passphrase='', is_sandbox=False, url='')
         # is sandbox
-        # client = WsToken('https://openapi-sandbox.kucoin.com')
         # client = WsToken(is_sandbox=True)
         ws_client = await KucoinWsClient.create(None, client, deal_msg, private=False)
         # await ws_client.subscribe('/market/ticker:BTC-USDT,ETH-USDT')
