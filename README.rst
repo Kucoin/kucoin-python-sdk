@@ -17,6 +17,9 @@ Features
 - Response exception handling
 - Implement websockets (note only python3.6+)
 
+update
+----------
+- 2020 12/01
 
 Quick Start
 -----------

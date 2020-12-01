@@ -23,7 +23,8 @@ class TradeData(KucoinBaseRestApi):
             'symbol': symbol,
             'size': size,
             'side': side,
-            'price': price
+            'price': price,
+            'type': "limit"
         }
         if not clientOid:
             clientOid = self.return_unique_id
@@ -32,6 +33,47 @@ class TradeData(KucoinBaseRestApi):
             params.update(kwargs)
 
         return self._request('POST', '/api/v1/orders', params=params)
+
+    def create_limit_stop_order(self, symbol, side, size, price, stopPrice,  clientOid="", **kwargs):
+        params = {
+            'symbol': symbol,
+            'size': size,
+            'side': side,
+            'price': price,
+            'stopPrice': stopPrice,
+            'type': "limit"
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/stop-order', params=params)
+
+    def create_market_stop_order(self, symbol, side, stopPrice, size="", funds="", clientOid="", **kwargs):
+        params = {
+            'symbol': symbol,
+            'side': side,
+            'stopPrice': stopPrice,
+            'type': "market"
+
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if size:
+            params['size'] = size
+        elif funds:
+            params['funds'] = funds
+        else:
+            raise Exception('Funds or size')
+
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/stop-order', params=params)
+
 
     def create_market_order(self, symbol, side, clientOid='', **kwargs):
         """
@@ -118,6 +160,58 @@ class TradeData(KucoinBaseRestApi):
         if kwargs:
             params.update(kwargs)
         return self._request('POST', '/api/v1/orders/multi', params=params)
+
+    def cancel_client_order(self, clientId):
+        """
+        :param orderId: str  (Mandatory)
+        :return:{"cancelledOrderId": "5f311183c9b6d539dc614db3","clientOid": "6d539dc614db3"}
+        """
+        return self._request('DELETE', f'/api/v1/order/client-order/{clientId}')
+
+    def cancel_stop_order(self, orderId):
+        """
+        :param orderId: Order ID, unique ID of the order. (Mandatory)
+        :type: str
+        :return:
+        {
+             "cancelledOrderIds": [
+              "5bd6e9286d99522a52e458de"   //orderId
+            ]
+        }
+        """
+        return self._request('DELETE', f'/api/v1/stop-order/{orderId}')
+
+    def cancel_client_stop_order(self, clientOid, symbol=""):
+        """
+        :param orderId: Order ID, unique ID of the order. (Mandatory)
+        :type: str
+        :return:
+        {
+             "cancelledOrderIds": [
+              "5bd6e9286d99522a52e458de"   //orderId
+            ]
+        }
+        """
+        params = {
+            "clientOid": clientOid
+        }
+        if symbol:
+            params["symbol"] = symbol
+
+        return self._request('DELETE', f'/api/v1/stop-order/cancelOrderByClientOid', params=params)
+
+    def cancel_stop_condition_order(self, symbol="", tradeType="", orderIds=""):
+        """
+        """
+        params = {}
+        if symbol:
+            params["symbol"] = symbol
+        if tradeType:
+            params["tradeType"] = tradeType
+        if orderIds:
+            params["orderIds"] = orderIds
+
+        return self._request('DELETE', f'/api/v1/stop-order/cancel',params=params)
 
     def cancel_order(self, orderId):
         """
@@ -299,6 +393,132 @@ class TradeData(KucoinBaseRestApi):
         """
         return self._request('GET', '/api/v1/orders/{orderId}'.format(orderId=orderId))
 
+    def get_all_stop_order_details(self, **kwargs):
+        """
+        :param orderId: Order ID, unique identifier of an order, obtained via the List orders. (Mandatory)
+        :return:
+        {
+            "id": "5c35c02703aa673ceec2a168",
+            "symbol": "BTC-USDT",
+            "opType": "DEAL",
+            "type": "limit",
+            "side": "buy",
+            "price": "10",
+            "size": "2",
+            "funds": "0",
+            "dealFunds": "0.166",
+            "dealSize": "2",
+            "fee": "0",
+            "feeCurrency": "USDT",
+            "stp": "",
+            "stop": "",
+            "stopTriggered": false,
+            "stopPrice": "0",
+            "timeInForce": "GTC",
+            "postOnly": false,
+            "hidden": false,
+            "iceberg": false,
+            "visibleSize": "0",
+            "cancelAfter": 0,
+            "channel": "IOS",
+            "clientOid": "",
+            "remark": "",
+            "tags": "",
+            "isActive": false,
+            "cancelExist": false,
+            "createdAt": 1547026471000,
+            "tradeType": "TRADE"
+        }
+        """
+        params = {}
+        if kwargs:
+            params.update(kwargs)
+        return self._request('GET', f'/api/v1/stop-order', params=params)
+
+    def get_stop_order_details(self, orderId):
+        """
+        :param orderId: Order ID, unique identifier of an order, obtained via the List orders. (Mandatory)
+        :return:
+        {
+            "id": "5c35c02703aa673ceec2a168",
+            "symbol": "BTC-USDT",
+            "opType": "DEAL",
+            "type": "limit",
+            "side": "buy",
+            "price": "10",
+            "size": "2",
+            "funds": "0",
+            "dealFunds": "0.166",
+            "dealSize": "2",
+            "fee": "0",
+            "feeCurrency": "USDT",
+            "stp": "",
+            "stop": "",
+            "stopTriggered": false,
+            "stopPrice": "0",
+            "timeInForce": "GTC",
+            "postOnly": false,
+            "hidden": false,
+            "iceberg": false,
+            "visibleSize": "0",
+            "cancelAfter": 0,
+            "channel": "IOS",
+            "clientOid": "",
+            "remark": "",
+            "tags": "",
+            "isActive": false,
+            "cancelExist": false,
+            "createdAt": 1547026471000,
+            "tradeType": "TRADE"
+        }
+        """
+        return self._request('GET', f'/api/v1/stop-order/{orderId}')
+
+    def get_client_stop_order_details(self, clientOid, symbol=''):
+        """
+        :param orderId: Order ID, unique identifier of an order, obtained via the List orders. (Mandatory)
+        :return:
+        {
+            "id": "5c35c02703aa673ceec2a168",
+            "symbol": "BTC-USDT",
+            "opType": "DEAL",
+            "type": "limit",
+            "side": "buy",
+            "price": "10",
+            "size": "2",
+            "funds": "0",
+            "dealFunds": "0.166",
+            "dealSize": "2",
+            "fee": "0",
+            "feeCurrency": "USDT",
+            "stp": "",
+            "stop": "",
+            "stopTriggered": false,
+            "stopPrice": "0",
+            "timeInForce": "GTC",
+            "postOnly": false,
+            "hidden": false,
+            "iceberg": false,
+            "visibleSize": "0",
+            "cancelAfter": 0,
+            "channel": "IOS",
+            "clientOid": "",
+            "remark": "",
+            "tags": "",
+            "isActive": false,
+            "cancelExist": false,
+            "createdAt": 1547026471000,
+            "tradeType": "TRADE"
+        }
+        """
+        params = {
+            "clientOid": clientOid
+        }
+        if symbol:
+            params["symbol"] = symbol
+
+        return self._request('GET', f'/api/v1/stop-order/queryOrderByClientOid', params=params)
+
     def get_fill_list(self, tradeType, **kwargs):
         """
         https://docs.kucoin.com/#list-fills
@@ -405,3 +625,7 @@ class TradeData(KucoinBaseRestApi):
         ]
         """
         return self._request('GET', '/api/v1/limit/fills')
+
+    def get_client_order_details(self, clientOid):
+
+        return self._request('GET', f'/api/v1/orders/{clientOid}')

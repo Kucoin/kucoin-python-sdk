@@ -516,7 +516,7 @@ class UserData(KucoinBaseRestApi):
 
         return self._request('GET', '/api/v1/withdrawals', params=params)
 
-    def get_withdrawal_list(self, **kwargs):
+    def get_hist_withdrawal_list(self, **kwargs):
         """
         https://docs.kucoin.com/#get-v1-historical-withdrawals-list
         :param kwargs: [optional] currency, status, startAt, endAt, currentPage , pageSize
