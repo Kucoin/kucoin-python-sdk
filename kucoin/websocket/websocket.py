@@ -3,6 +3,7 @@ import json
 import time
 import websockets
 from random import random
+from uuid import uuid4
 
 
 class ConnectWebsocket:
@@ -59,7 +60,7 @@ class ConnectWebsocket:
     def get_ws_endpoint(self):
         if not self._ws_details:
             raise Exception("Websocket details Error")
-        ws_connect_id = str(int(time.time() * 1000))
+        ws_connect_id = str(uuid4()).replace('-', '')
         token = self._ws_details['token']
         endpoint = self._ws_details['instanceServers'][0]['endpoint']
         ws_endpoint = f"{endpoint}?token={token}&connectId={ws_connect_id}"
