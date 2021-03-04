@@ -3,6 +3,70 @@ from kucoin.base_request.base_request import KucoinBaseRestApi
 
 class TradeData(KucoinBaseRestApi):
 
+    def create_limit_margin_order(self, symbol, side, size, price, clientOid='', **kwargs):
+        """
+        https://docs.kucoin.com/#place-a-margin-order
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param side: place direction buy or sell (Mandatory)
+        :type: str
+        :param size: amount of base currency to buy or sell (Mandatory)
+        :type: str
+        :param price: price per base currency (Mandatory)
+        :type: str
+        :param clientOid: Unique order id created by users to identify their orders, e.g. UUID. (Mandatory)
+        :type: str
+        :param kwargs:  Fill in parameters with reference documents
+        :return: {
+                  "orderId": "5bd6e9286d99522a52e458de",
+                  "borrowSize":10.2,
+                  "loanApplyId":"600656d9a33ac90009de4f6f"
+                }
+        """
+        params = {
+            'symbol': symbol,
+            'size': size,
+            'side': side,
+            'price': price,
+            'type': "limit"
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/margin/order', params=params)
+
+    def create_market_margin_order(self, symbol, side, clientOid='', **kwargs):
+        """
+        https://docs.kucoin.com/#place-a-margin-order
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param side: place direction buy or sell (Mandatory)
+        :type: str
+        :param clientOid: Unique order id created by users to identify their orders, e.g. UUID. (Mandatory)
+        :type: str
+        :param kwargs:  Fill in parameters with reference documents
+        :return: {
+                  "orderId": "5bd6e9286d99522a52e458de",
+                  "borrowSize":10.2,
+                  "loanApplyId":"600656d9a33ac90009de4f6f"
+                }
+        """
+        params = {
+            'symbol': symbol,
+            'side': side,
+            'type': "market"
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/margin/order', params=params)
+
     def create_limit_order(self, symbol, side, size, price, clientOid='', **kwargs):
         """
         https://docs.kucoin.com/#place-a-new-order
@@ -74,7 +138,6 @@ class TradeData(KucoinBaseRestApi):
 
         return self._request('POST', '/api/v1/stop-order', params=params)
 
-
     def create_market_order(self, symbol, side, clientOid='', **kwargs):
         """
         https://docs.kucoin.com/#place-a-new-order
@@ -89,7 +152,8 @@ class TradeData(KucoinBaseRestApi):
         """
         params = {
             'symbol': symbol,
-            'side': side
+            'side': side,
+            'type': "market"
         }
         if not clientOid:
             clientOid = self.return_unique_id

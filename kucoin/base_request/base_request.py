@@ -13,7 +13,7 @@ from urllib.parse import urljoin
 
 class KucoinBaseRestApi(object):
 
-    def __init__(self, key='', secret='', passphrase='', is_sandbox=False, url=''):
+    def __init__(self, key='', secret='', passphrase='', is_sandbox=False, url='', is_v1api=False):
         """
         https://docs.kucoin.com
 
@@ -37,6 +37,7 @@ class KucoinBaseRestApi(object):
         self.key = key
         self.secret = secret
         self.passphrase = passphrase
+        self.is_v1api = is_v1api
 
     def _request(self, method, uri, timeout=5, auth=True, params=None):
         uri_path = uri
@@ -61,13 +62,25 @@ class KucoinBaseRestApi(object):
             str_to_sign = str(now_time) + method + uri_path
             sign = base64.b64encode(
                 hmac.new(self.secret.encode('utf-8'), str_to_sign.encode('utf-8'), hashlib.sha256).digest())
-            headers = {
-                "KC-API-SIGN": sign,
-                "KC-API-TIMESTAMP": str(now_time),
-                "KC-API-KEY": self.key,
-                "KC-API-PASSPHRASE": self.passphrase,
-                "Content-Type": "application/json"
-            }
+            if self.is_v1api:
+                headers = {
+                    "KC-API-SIGN": sign,
+                    "KC-API-TIMESTAMP": str(now_time),
+                    "KC-API-KEY": self.key,
+                    "KC-API-PASSPHRASE": self.passphrase,
+                    "Content-Type": "application/json"
+                }
+            else:
+                passphrase = base64.b64encode(
+                    hmac.new(self.secret.encode('utf-8'), self.passphrase.encode('utf-8'), hashlib.sha256).digest())
+                headers = {
+                    "KC-API-SIGN": sign,
+                    "KC-API-TIMESTAMP": str(now_time),
+                    "KC-API-KEY": self.key,
+                    "KC-API-PASSPHRASE": passphrase,
+                    "Content-Type": "application/json",
+                    "KC-API-KEY-VERSION": "2"
+                }
         url = urljoin(self.url, uri)
         if method in ['GET', 'DELETE']:
             response_data = requests.request(method, url, headers=headers, timeout=timeout)
