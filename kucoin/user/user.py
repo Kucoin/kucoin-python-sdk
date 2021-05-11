@@ -3,6 +3,48 @@ from kucoin.base_request.base_request import KucoinBaseRestApi
 
 class UserData(KucoinBaseRestApi):
 
+    def get_actual_fee(self, symbols):
+        """
+        https://docs.kucoin.top/#actual-fee-rate-of-the-trading-pair
+        :param symbols: symbols
+        :type: str
+        :return:
+            {
+                "code": "200000",
+                "data": [
+                    {
+                        "symbol": "BTC-USDT",
+                        "takerFeeRate": "0.001",
+                        "makerFeeRate": "0.001"
+                    },
+                    {
+                        "symbol": "KCS-USDT",
+                        "takerFeeRate": "0.002",
+                        "makerFeeRate": "0.0005"
+                    }
+                ]
+            }
+        """
+        params = {
+            "symbols": symbols
+        }
+        return self._request('GET', '/api/v1/trade-fees', params=params)
+
+    def get_base_fee(self):
+        """
+        https://docs.kucoin.top/#basic-user-fee
+
+        :return:
+            {
+                "code": "200000",
+                "data": {
+                    "takerFeeRate": "0.001",
+                    "makerFeeRate": "0.001"
+                }
+            }
+        """
+        return self._request('GET', '/api/v1/base-fee')
+
     def get_sub_user(self):
         """
         https://docs.kucoin.com/#get-user-info-of-all-sub-accounts
@@ -87,19 +129,19 @@ class UserData(KucoinBaseRestApi):
         """
         return self._request('GET', '/api/v1/accounts/{accountId}'.format(accountId=accountId))
 
-    def get_account_ledger(self, accountId, **kwargs):
+    def get_account_ledger(self, **kwargs):
         """
-        https://docs.kucoin.com/#get-account-ledgers
-        :param accountId: ID of the account (Mandatory)
-        :type: str
-        :param kwargs: [optional] direction, bizType, startAt, endAt, currentPage , pageSize
+        https://docs.kucoin.top/#get-account-ledgers
+        :param kwargs: [optional] currency, direction, bizType, startAt, endAt, currentPage , pageSize
         :return:
         {
             "currentPage": 1,
             "pageSize": 10,
             "totalNum": 3,
             "totalPage": 1,
-            "items": [{
+            "items": [
+                {
+                    "id": "5bc7f080b39c5c03486eef8c",//unique key
                     "currency": "KCS",  //Currency
                     "amount": "0.0998", //Change amount of the funds
                     "fee": "0",  //Deposit or withdrawal fee
@@ -108,11 +150,13 @@ class UserData(KucoinBaseRestApi):
                     "direction": "in",     //side, in or out
                     "createdAt": 1540296039000,  //Creation time
                     "context": {          //Business core parameters
+
                         "orderId": "5bc7f080b39c5c03286eef8a",
                         "txId": "bf848bfb6736780b930e12c68721ea57f8b0484a4af3f30db75c93ecf16905c9"
                     }
                 },
                 {
+                    "id": "5bc7f080b39c5c03486def8c",//unique key
                     "currency": "KCS",
                     "amount": "0.0998",
                     "fee": "0",
@@ -121,11 +165,13 @@ class UserData(KucoinBaseRestApi):
                     "direction": "in",
                     "createdAt": 1540296039000,
                     "context": {
+
                         "orderId": "5bc7f080b39c5c03286eef8a",
                         "txId": "bf848bfb6736780b930e12c68721ea57f8b0484a4af3f30db75c93ecf16905c9"
                     }
                 },
                 {
+                    "id": "5bc7f080b39c5c03486def8a",//unique key
                     "currency": "KCS",
                     "amount": "0.0998",
                     "fee": "0",
@@ -134,8 +180,9 @@ class UserData(KucoinBaseRestApi):
                     "direction": "in",
                     "createdAt": 1540296039000,
                     "context": {
-                        "orderId": "5bc7f080b39c5c03286eef8e",
+
                         "tradeId": "5bc7f080b3949c03286eef8a",
+                        "orderId": "5bc7f080b39c5c03286eef8e",
                         "symbol": "BTC-USD"
                     }
                 }
@@ -146,7 +193,7 @@ class UserData(KucoinBaseRestApi):
         if kwargs:
             params.update(kwargs)
 
-        return self._request('GET', '/api/v1/accounts/{accountId}/ledgers'.format(accountId=accountId), params=params)
+        return self._request('GET', '/api/v1/accounts/ledgers', params=params)
 
     def get_account_hold(self, accountId, **kwargs):
         """
@@ -377,6 +424,29 @@ class UserData(KucoinBaseRestApi):
         if chain:
             params['chain'] = chain
         return self._request('POST', '/api/v1/deposit-addresses', params=params)
+
+    def get_deposit_addressv2(self, currency, chain=None):
+        """
+        https://docs.kucoin.com/#get-deposit-addresses-v2
+        :param currency: currency (Mandatory)
+        :type: str
+        :param chain: The chain name of currency, e.g. The available value for USDT are OMNI, ERC20, TRC20,default is
+        OMNI. This only apply for multi-chain currency, and there is no need for single chain currency. (Optional)
+        :type: str
+        :return:
+        [{
+            "address": "0x78d3ad1c0aa1bf068e19c94a2d7b16c9c0fcd8b1",
+            "memo": "5c247c8a03aa677cea2a251d",        //tag
+            "chain": "OMNI",
+            "contractAddress": ""
+        }]
+        """
+        params = {
+            'currency': currency
+        }
+        if chain:
+            params['chain'] = chain
+        return self._request('GET', '/api/v2/deposit-addresses', params=params)
 
     def get_deposit_address(self, currency, chain=None):
         """

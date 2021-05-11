@@ -155,6 +155,26 @@ class MarketData(KucoinBaseRestApi):
         }
         return self._request('GET', '/api/v1/market/orderbook/level2_{pieces}'.format(pieces=pieces), params=params)
 
+    def get_aggregated_orderv3(self, symbol):
+        """
+        https://docs.kucoin.com/#get-full-order-book-aggregated
+        :param symbol: symbol (Mandatory)
+        :type: str
+        :return:
+        {
+            "sequence": "3262786978",
+            "time": 1550653727731,
+            "bids": [["6500.12", "0.45054140"],
+                     ["6500.11", "0.45054140"]],  //[price，size]
+            "asks": [["6500.16", "0.57753524"],
+                     ["6500.15", "0.57753524"]]
+        }
+        """
+        params = {
+            'symbol': symbol
+        }
+        return self._request('GET', '/api/v3/market/orderbook/level2', params=params)
+
     def get_aggregated_order(self, symbol):
         """
         https://docs.kucoin.com/#get-full-order-book-aggregated
@@ -174,6 +194,49 @@ class MarketData(KucoinBaseRestApi):
             'symbol': symbol
         }
         return self._request('GET', '/api/v2/market/orderbook/level2', params=params)
+
+    def get_atomic_orderv3(self, symbol):
+        """
+        https://docs.kucoin.com/#get-full-order-book-atomic
+        :param symbol: symbol (Mandatory)
+        :type: str
+        :return:
+        {
+            "data": {
+                "sequence": "1573503933086",
+                "asks": [
+                    [
+                        "5e0d672c1f311300093ac522",   //orderId
+                        "0.1917",                     //price
+                        "390.9275",                   //size
+                        "1577936689346546088"         //time,nanoseconds
+                    ],
+                    [
+                        "5e0d672891432f000819ecc3",
+                        "0.19171",
+                        "1456.1316",
+                        "1577936685718811031"
+                    ]
+                ],
+                "bids": [
+                    [
+                        "5e0d672cdc53860007f30262",
+                        "0.19166",
+                        "178.1936",
+                        "1577936689166023452"
+                    ],
+                    [
+                        "5e0d671a91432f000819d1b0",
+                        "0.19165",
+                        "583.6298",
+                        "1577936671595901518"
+                    ]
+                ],
+                "time": 1577936685107
+            }
+        }
+        """
+        return self._request('GET', f'/api/v3/market/orderbook/level3?symbol={symbol}')
 
     def get_atomic_order(self, symbol):
         """
