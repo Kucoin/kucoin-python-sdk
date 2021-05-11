@@ -93,20 +93,20 @@ Websockets
 
     async def main():
         async def deal_msg(msg):
-            if msg['topic'] == '/market/level3:BTC-USDT':
+            if msg['topic'] == '/spotMarket/level2Depth5:BTC-USDT':
                 print(msg["data"])
-            elif msg['topic'] == '/market/level3:KCS-USDT':
+            elif msg['topic'] == '/spotMarket/level2Depth5:KCS-USDT':
                 print(f'Get KCS level3:{msg["data"]}')
 
         # is public
-        # client = WsToken()
+        client = WsToken()
         #is private
-        client = WsToken(key='', secret='', passphrase='', is_sandbox=False, url='')
+        # client = WsToken(key='', secret='', passphrase='', is_sandbox=False, url='')
         # is sandbox
         # client = WsToken(is_sandbox=True)
         ws_client = await KucoinWsClient.create(None, client, deal_msg, private=False)
         # await ws_client.subscribe('/market/ticker:BTC-USDT,ETH-USDT')
-        await ws_client.subscribe('/market/level3:BTC-USDT,KCS-USDT')
+        await ws_client.subscribe('/spotMarket/level2Depth5:BTC-USDT,KCS-USDT')
         while True:
             await asyncio.sleep(60, loop=loop)
 
