@@ -64,8 +64,6 @@ class ConnectWebsocket:
         token = self._ws_details['token']
         endpoint = self._ws_details['instanceServers'][0]['endpoint']
         ws_endpoint = f"{endpoint}?token={token}&connectId={ws_connect_id}"
-        if self._private:
-            ws_endpoint += '&acceptUserMessage=true'
         return ws_endpoint
 
     def get_ws_encryption(self):
