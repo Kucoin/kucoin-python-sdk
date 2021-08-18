@@ -696,7 +696,7 @@ class TradeData(KucoinBaseRestApi):
     def get_client_order_details(self, clientOid):
         """
         https://docs.kucoin.com/#recent-fills
-        :param clientOid: The type of trading (Mandatory)
+        :param clientOid: Unique order id created by users to identify their orders
         :return:
         {
           "id": "61149d589281bc00064a9ee0",
