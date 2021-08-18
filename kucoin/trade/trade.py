@@ -163,66 +163,69 @@ class TradeData(KucoinBaseRestApi):
 
         return self._request('POST', '/api/v1/orders', params=params)
 
-    def create_bulk_orders(self, side, symbol, price, size, clientOid='', **kwargs):
+    def create_bulk_orders(self, symbol, orderList):
         """
         https://docs.kucoin.com/#place-bulk-orders
-        :param side: place direction buy or sell (Mandatory)
+        :param symbol: a valid trading symbol code.
         :type: str
-        :param symbol: a valid trading symbol code (Mandatory)
-        :type: str
-        :param price: price per base currency (Mandatory)
-        :type: str
-        :param size: amount of base currency to buy or sell (Mandatory)
-        :type: str
-        :param clientOid: Unique order id created by users to identify their orders, e.g. UUID. (Mandatory)
-        :type: str
-        :param kwargs: Fill in parameters with reference documents
+        :param orderList: order list
+        :type: list
         :return:
         {
-            "success": true, // RESPONSE
-            "code": "200",
-            "msg": "success",
-            "retry": false,
-            "data": {
-              "data": [
-                  {
-                    "symbol": "BTC-USDT",
-                    "type": "limit",
-                    "side": "buy",
-                    "price": "9661",
-                    "size": "1",
-                    "funds": null,
-                    "stp": "",
-                    "stop": "",
-                    "stopPrice": "0",
-                    "timeInForce": "GTC",
-                    "cancelAfter": 0,
-                    "postOnly": false,
-                    "hidden": false,
-                    "iceberge": false,
-                    "iceberg": false,
-                    "visibleSize": "0",
-                    "channel": "API",
-                    "id": null,
-                    "status": "fail",
-                    "failMsg": "error.createOrder.accountBalanceInsufficient",
-                    "clientOid": "5e42743514832d53d255d921"
-                  }
-              ]
+          "data": [
+            {
+              "symbol": "KCS-USDT",
+              "type": "limit",
+              "side": "buy",
+              "price": "0.01",
+              "size": "0.01",
+              "funds": null,
+              "stp": "",
+              "stop": "",
+              "stopPrice": null,
+              "timeInForce": "GTC",
+              "cancelAfter": 0,
+              "postOnly": false,
+              "hidden": false,
+              "iceberge": false,
+              "iceberg": false,
+              "visibleSize": null,
+              "channel": "API",
+              "id": "611a6a309281bc000674d3c0",
+              "status": "success",
+              "failMsg": null,
+              "clientOid": "552a8a0b7cb04354be8266f0e202e7e9"
+            },
+            {
+              "symbol": "KCS-USDT",
+              "type": "limit",
+              "side": "buy",
+              "price": "0.01",
+              "size": "0.01",
+              "funds": null,
+              "stp": "",
+              "stop": "",
+              "stopPrice": null,
+              "timeInForce": "GTC",
+              "cancelAfter": 0,
+              "postOnly": false,
+              "hidden": false,
+              "iceberge": false,
+              "iceberg": false,
+              "visibleSize": null,
+              "channel": "API",
+              "id": "611a6a309281bc000674d3c1",
+              "status": "success",
+              "failMsg": null,
+              "clientOid": "bd1e95e705724f33b508ed270888a4a9"
             }
+          ]
         }
         """
         params = {
-            'side': side,
             'symbol': symbol,
-            'price': price,
-            'size': size
+            'orderList': orderList,
         }
-        if not clientOid:
-            clientOid = self.return_unique_id
-        params['clientOid'] = clientOid
-        if kwargs:
-            params.update(kwargs)
         return self._request('POST', '/api/v1/orders/multi', params=params)
 
     def cancel_client_order(self, clientId):
@@ -691,5 +694,41 @@ class TradeData(KucoinBaseRestApi):
         return self._request('GET', '/api/v1/limit/fills')
 
     def get_client_order_details(self, clientOid):
-
-        return self._request('GET', f'/api/v1/orders/{clientOid}')
+        """
+        https://docs.kucoin.com/#recent-fills
+        :param clientOid: The type of trading (Mandatory)
+        :return:
+        {
+          "id": "61149d589281bc00064a9ee0",
+          "symbol": "KCS-USDT",
+          "opType": "DEAL",
+          "type": "limit",
+          "side": "buy",
+          "price": "0.001",
+          "size": "0.01",
+          "funds": "0",
+          "dealFunds": "0",
+          "dealSize": "0",
+          "fee": "0",
+          "feeCurrency": "USDT",
+          "stp": "",
+          "stop": "",
+          "stopTriggered": false,
+          "stopPrice": "0",
+          "timeInForce": "GTC",
+          "postOnly": false,
+          "hidden": false,
+          "iceberg": false,
+          "visibleSize": "0",
+          "cancelAfter": 0,
+          "channel": "API",
+          "clientOid": "03cd879961b64429b0e0149f311ce59f",
+          "remark": null,
+          "tags": null,
+          "isActive": false,
+          "cancelExist": true,
+          "createdAt": 1628740952556,
+          "tradeType": "MARGIN_TRADE"
+        }
+        """
+        return self._request('GET', f'/api/v1/order/client-order/{clientOid}')
