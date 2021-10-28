@@ -18,6 +18,7 @@ class KucoinWsClient:
     @classmethod
     async def create(cls, loop, client, callback, private=False):
         self = KucoinWsClient()
+        loop = loop if loop else asyncio.get_running_loop()
         self._loop = loop
         self._client = client
         self._private = private
