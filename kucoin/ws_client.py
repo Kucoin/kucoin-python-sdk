@@ -1,4 +1,5 @@
 from kucoin.websocket.websocket import ConnectWebsocket
+import asyncio
 
 
 class KucoinWsClient:
@@ -12,10 +13,12 @@ class KucoinWsClient:
         self._loop = None
         self._client = None
         self._private = False
+        self._topics = set()
 
     @classmethod
     async def create(cls, loop, client, callback, private=False):
         self = KucoinWsClient()
+        loop = loop if loop else asyncio.get_running_loop()
         self._loop = loop
         self._client = client
         self._private = private
@@ -39,7 +42,7 @@ class KucoinWsClient:
             'topic': topic,
             'response': True
         }
-
+        self._conn.topics.append(topic)
         await self._conn.send_message(req_msg)
 
     async def unsubscribe(self, topic):
@@ -55,5 +58,5 @@ class KucoinWsClient:
             'topic': topic,
             'response': True
         }
-
+        self._conn.topics.remove(topic)
         await self._conn.send_message(req_msg)
