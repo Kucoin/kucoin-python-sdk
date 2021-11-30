@@ -23,8 +23,8 @@ class ConnectWebsocket:
         self._private = private
         self._last_ping = None
         self._socket = None
-        asyncio.ensure_future(self.run_forever(), loop=self._loop)
         self._topics = []
+        asyncio.ensure_future(self.run_forever(), loop=self._loop)
 
     @property
     def topics(self):
@@ -35,7 +35,7 @@ class ConnectWebsocket:
         self._last_ping = time.time()  # record last ping
         self._ws_details = None
         self._ws_details = self._client.get_ws_token(self._private)
-        logger.warning(self._ws_details)
+        logger.debug(self._ws_details)
 
         async with websockets.connect(self.get_ws_endpoint(), ssl=self.get_ws_encryption()) as socket:
             self._socket = socket
@@ -48,11 +48,9 @@ class ConnectWebsocket:
             while keep_alive:
                 if time.time() - self._last_ping > self.get_ws_pingtimeout():
                     await self.send_ping()
-
                 try:
                     _msg = await asyncio.wait_for(self._socket.recv(), timeout=self.get_ws_pingtimeout())
                 except asyncio.TimeoutError:
-                    logger.exception('TimeoutError')
                     await self.send_ping()
                 except asyncio.CancelledError:
                     logger.exception('CancelledError')
@@ -62,7 +60,6 @@ class ConnectWebsocket:
                         msg = json.loads(_msg)
                     except ValueError:
                         logger.warning(_msg)
-                        pass
                     else:
                         await self._callback(msg)
 
@@ -91,13 +88,13 @@ class ConnectWebsocket:
             await self._reconnect()
 
     async def _reconnect(self):
-        logger.warning('start reconnect')
+        logger.info('Websocket start connect/reconnect')
 
         self._reconnect_num += 1
         reconnect_wait = self._get_reconnect_wait(self._reconnect_num)
-        logger.warning(f'asyncio sleep {reconnect_wait}')
+        logger.info(f'asyncio sleep reconnect_wait={reconnect_wait} s reconnect_num={self._reconnect_num}')
         await asyncio.sleep(reconnect_wait)
-        logger.warning(f'asyncio sleep ok {reconnect_wait}')
+        logger.info(f'asyncio sleep ok')
         event = asyncio.Event()
 
         tasks = {
@@ -111,7 +108,7 @@ class ConnectWebsocket:
             for task in finished:
                 if task.exception():
                     exception_occur = True
-                    print("{} got an exception {}".format(task, task.exception()))
+                    logger.warning("{} got an exception {}".format(task, task.exception()))
                     for pt in pending:
                         logger.warning(f'pending {pt}')
                         try:
@@ -126,16 +123,16 @@ class ConnectWebsocket:
         logger.warning('_reconnect over.')
 
     async def _recover_topic_req_msg(self, event):
-        logger.warning(f'recover topic event {self.topics} waiting')
+        logger.info(f'recover topic event {self.topics} waiting')
         await event.wait()
-        logger.warning(f'recover topic event {self.topics} done.')
+        logger.info(f'recover topic event {self.topics} done.')
         for topic in self.topics:
             await self.send_message({
                 'type': 'subscribe',
                 'topic': topic,
                 'response': True
             })
-            logger.warning(f'{topic} OK')
+            logger.info(f'{topic} OK')
 
     def _get_reconnect_wait(self, attempts):
         expo = 2 ** attempts
@@ -151,7 +148,7 @@ class ConnectWebsocket:
 
     async def send_message(self, msg, retry_count=0):
         if not self._socket:
-            if retry_count < 5:
+            if retry_count < self.MAX_RECONNECTS:
                 await asyncio.sleep(1)
                 await self.send_message(msg, retry_count + 1)
         else:
