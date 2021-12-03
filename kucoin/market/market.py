@@ -1,3 +1,4 @@
+import warnings
 from kucoin.base_request.base_request import KucoinBaseRestApi
 
 
@@ -402,10 +403,75 @@ class MarketData(KucoinBaseRestApi):
             "isDebitEnabled": true
         }
         """
+        warnings.warn("The 'get_currency_detail' method is deprecated, use 'get_currency_detail_v2' instead",
+                      DeprecationWarning)
         params = {}
         if chain:
             params['chain'] = chain
         return self._request('GET', '/api/v1/currencies/{currency}'.format(currency=currency), params=params)
+    
+    def get_currency_detail_v2(self, currency, chain=None):
+        """
+        https://docs.kucoin.com/#get-currency-detail-recommend
+        :param currency: currency (Mandatory)
+        :type: str
+        :param chain: [Optional] Support for querying the chain of currency, return the currency details of all chains by default.
+        :type: str
+        :return:
+        {
+          "currency": "BTC",
+          "name": "BTC",
+          "fullName": "Bitcoin",
+          "precision": 8,
+          "confirms": null,
+          "contractAddress": null,
+          "isMarginEnabled": true,
+          "isDebitEnabled": true,
+          "chains": [
+            {
+              "chainName": "BTC",
+              "withdrawalMinSize": "0.0008",
+              "withdrawalMinFee": "0.0005",
+              "isWithdrawEnabled": true,
+              "isDepositEnabled": true,
+              "confirms": 2,
+              "contractAddress": ""
+            },
+            {
+              "chainName": "KCC",
+              "withdrawalMinSize": "0.0008",
+              "withdrawalMinFee": "0.00002",
+              "isWithdrawEnabled": true,
+              "isDepositEnabled": true,
+              "confirms": 20,
+              "contractAddress": ""
+            },
+            {
+              "chainName": "TRC20",
+              "withdrawalMinSize": "0.0008",
+              "withdrawalMinFee": "0.0004",
+              "isWithdrawEnabled": false,
+              "isDepositEnabled": true,
+              "confirms": 1,
+              "contractAddress": ""
+            },
+            {
+              "chainName": "BTC-Segwit",
+              "withdrawalMinSize": "0.0008",
+              "withdrawalMinFee": "0.0005",
+              "isWithdrawEnabled": true,
+              "isDepositEnabled": true,
+              "confirms": 2,
+              "contractAddress": ""
+            }
+          ]
+        }
+        """
+        params = {}
+        if chain:
+            params['chain'] = chain
+        return self._request('GET', '/api/v2/currencies/{currency}'.format(currency=currency), params=params)
+    
 
     def get_fiat_price(self, **kwargs):
         """

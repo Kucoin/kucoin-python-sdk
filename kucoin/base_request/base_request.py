@@ -11,6 +11,13 @@ from uuid import uuid1
 from urllib.parse import urljoin
 
 
+try:
+    import pkg_resources
+    version = 'v' + pkg_resources.get_distribution("kucoin-python").version
+except (ModuleNotFoundError, pkg_resources.DistributionNotFound):
+    version = 'v1.0.0'
+
+
 class KucoinBaseRestApi(object):
 
     def __init__(self, key='', secret='', passphrase='', is_sandbox=False, url='', is_v1api=False):
@@ -42,7 +49,6 @@ class KucoinBaseRestApi(object):
     def _request(self, method, uri, timeout=5, auth=True, params=None):
         uri_path = uri
         data_json = ''
-        version = 'v1.0.7'
         if method in ['GET', 'DELETE']:
             if params:
                 strl = []
