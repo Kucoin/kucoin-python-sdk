@@ -123,7 +123,7 @@ class MarketData(KucoinBaseRestApi):
 
     def get_market_list(self):
         """
-        https://docs.kucoin.com/#get-24hr-stats
+        https://docs.kucoin.com/#get-market-list
         :return:
         [
             "BTC",
