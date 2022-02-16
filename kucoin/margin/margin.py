@@ -423,3 +423,46 @@ class MarginData(KucoinBaseRestApi):
             'currency': currency
         }
         return self._request('GET', '/api/v1/margin/trade/last', params=params)
+    
+    def get_margin_risk_limit(self, marginModel='cross'):
+        """
+        https://docs.kucoin.com/#margin-trade-data
+        :param marginModel: marginModel
+        :type: str
+        :return:
+        [{
+        "currency": "BTC",
+        "borrowMaxAmount": "50",
+        "buyMaxAmount": "50",
+        "precision": 8
+        },
+        {
+        "currency": "SKL",
+        "borrowMaxAmount": "50000",
+        "buyMaxAmount": "51000",
+        "precision": 3
+        },
+        {
+        "currency": "USDT",
+        "borrowMaxAmount": "100000",
+        "buyMaxAmount": "10000000000",
+        "precision": 8
+        },
+        {
+        "currency": "ETH",
+        "borrowMaxAmount": "236",
+        "buyMaxAmount": "500",
+        "precision": 8
+        },
+        {
+        "currency": "LTC",
+        "borrowMaxAmount": "100",
+        "buyMaxAmount": "40",
+        "precision": 8
+        }]
+        """
+        params = {
+            'marginModel': marginModel,
+        }
+        return self._request('GET', '/api/v1/risk/limit/strategy', params=params)
+
