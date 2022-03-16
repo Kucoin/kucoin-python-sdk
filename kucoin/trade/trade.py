@@ -372,6 +372,56 @@ class TradeData(KucoinBaseRestApi):
 
         return self._request('GET', '/api/v1/orders', params=params)
 
+    def get_live_order_list(self, status):
+        """
+        https://docs.kucoin.com/#list-orders
+        :param kwargs: status (Mandatory)
+        :type: str
+        :return:
+        {
+            "currentPage": 1,
+            "pageSize": 1,
+            "totalNum": 153408,
+            "totalPage": 153408,
+            "items": [
+              {
+                "id": "5c35c02703aa673ceec2a168",   //orderid
+                "symbol": "BTC-USDT",   //symbol
+                "opType": "DEAL",      // operation type: DEAL
+                "type": "limit",       // order type,e.g. limit,market,stop_limit.
+                "side": "buy",         // transaction direction,include buy and sell
+                "price": "10",         // order price
+                "size": "2",           // order quantity
+                "funds": "0",          // order funds
+                "dealFunds": "0.166",  // deal funds
+                "dealSize": "2",       // deal quantity
+                "fee": "0",            // fee
+                "feeCurrency": "USDT", // charge fee currency
+                "stp": "",             // self trade prevention,include CN,CO,DC,CB
+                "stop": "",            // stop type
+                "stopTriggered": false,  // stop order is triggered
+                "stopPrice": "0",      // stop price
+                "timeInForce": "GTC",  // time InForce,include GTC,GTT,IOC,FOK
+                "postOnly": false,     // postOnly
+                "hidden": false,       // hidden order
+                "iceberg": false,      // iceberg order
+                "visibleSize": "0",    // display quantity for iceberg order
+                "cancelAfter": 0,      // cancel orders time，requires timeInForce to be GTT
+                "channel": "IOS",      // order source
+                "clientOid": "",       // user-entered order unique mark
+                "remark": "",          // remark
+                "tags": "",            // tag order source
+                "isActive": false,     // status before unfilled or uncancelled
+                "cancelExist": false,   // order cancellation transaction record
+                "createdAt": 1547026471000,  // create time
+                "tradeType": "TRADE"
+              }
+            ]
+         }
+        """
+
+        return self._request('GET', '/api/v1/orders?status={}'.format(status))
+        
     def get_recent_orders(self):
         """
         https://docs.kucoin.com/#recent-orders
