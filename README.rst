@@ -108,9 +108,8 @@ Websockets
         # await ws_client.subscribe('/market/ticker:BTC-USDT,ETH-USDT')
         await ws_client.subscribe('/spotMarket/level2Depth5:BTC-USDT,KCS-USDT')
         while True:
-            await asyncio.sleep(60, loop=loop)
+            await asyncio.sleep(60)
 
 
     if __name__ == "__main__":
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
+        asyncio.run(main())
