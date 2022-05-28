@@ -5,7 +5,7 @@ class UserData(KucoinBaseRestApi):
 
     def get_actual_fee(self, symbols):
         """
-        https://docs.kucoin.top/#actual-fee-rate-of-the-trading-pair
+        https://docs.kucoin.com/#actual-fee-rate-of-the-trading-pair
         :param symbols: symbols
         :type: str
         :return:
@@ -32,7 +32,7 @@ class UserData(KucoinBaseRestApi):
 
     def get_base_fee(self):
         """
-        https://docs.kucoin.top/#basic-user-fee
+        https://docs.kucoin.com/#basic-user-fee
 
         :return:
             {
@@ -131,7 +131,7 @@ class UserData(KucoinBaseRestApi):
 
     def get_account_ledger(self, **kwargs):
         """
-        https://docs.kucoin.top/#get-account-ledgers
+        https://docs.kucoin.com/#get-account-ledgers
         :param kwargs: [optional] currency, direction, bizType, startAt, endAt, currentPage , pageSize
         :return:
         {
