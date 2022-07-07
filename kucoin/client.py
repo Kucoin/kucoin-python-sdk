@@ -3,6 +3,7 @@ from kucoin.market.market import MarketData
 from kucoin.trade.trade import TradeData
 from kucoin.user.user import UserData
 from kucoin.ws_token.token import GetToken
+from kucoin.futures.futures import FuturesData
 
 
 class User(UserData):
@@ -24,4 +25,7 @@ class Margin(MarginData):
 class WsToken(GetToken):
     pass
 
+
+class Futures(FuturesData):
+    pass
 
