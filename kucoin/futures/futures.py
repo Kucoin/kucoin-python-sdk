@@ -30,7 +30,12 @@ class FuturesData(KucoinBaseRestApi):
         """
         if currency is None:
             return self._request('GET', '/api/v1/account-overview')
-        return self._request('GET', '/api/v1/account-overview?currency=' + currency)
+
+
+        params = {
+           "currency": currency,
+        }
+        return self._request('GET', '/api/v1/account-overview', params=params)
 
 
     # To do: Add all the other methods
