@@ -511,3 +511,54 @@ class MarketData(KucoinBaseRestApi):
         }
         """
         return self._request('GET', '/api/v1/status', auth=False)
+
+    def get_symbol_list_v2(self, **kwargs):
+        """
+        https://docs.kucoin.com/#get-symbols-list
+        :param kwargs: [Optional] market
+        :return:
+        [
+            {
+                "symbol": "GALAX-USDT",
+                "name": "GALA-USDT",
+                "baseCurrency": "GALAX",
+                "quoteCurrency": "USDT",
+                "feeCurrency": "USDT",
+                "market": "USDS",
+                "baseMinSize": "10",
+                "quoteMinSize": "0.001",
+                "baseMaxSize": "10000000000",
+                "quoteMaxSize": "99999999",
+                "baseIncrement": "0.0001",
+                "quoteIncrement": "0.00001",
+                "priceIncrement": "0.00001",
+                "priceLimitRate": "0.1",
+                "minFunds": "0.1",
+                "isMarginEnabled": true,
+                "enableTrading": true
+            },
+            {
+                "symbol": "XLM-USDT",
+                "name": "XLM-USDT",
+                "baseCurrency": "XLM",
+                "quoteCurrency": "USDT",
+                "feeCurrency": "USDT",
+                "market": "USDS",
+                "baseMinSize": "0.1",
+                "quoteMinSize": "0.01",
+                "baseMaxSize": "10000000000",
+                "quoteMaxSize": "99999999",
+                "baseIncrement": "0.0001",
+                "quoteIncrement": "0.000001",
+                "priceIncrement": "0.000001",
+                "priceLimitRate": "0.1",
+                "minFunds": "0.1",
+                "isMarginEnabled": true,
+                "enableTrading": true
+            }
+        ]
+        """
+        params = {}
+        if kwargs:
+            params.update(kwargs)
+        return self._request('GET', '/api/v2/symbols', params=params)

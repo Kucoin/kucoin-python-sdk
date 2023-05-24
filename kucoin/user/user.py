@@ -678,3 +678,295 @@ class UserData(KucoinBaseRestApi):
         :return:
         """
         return self._request('DELETE', '/api/v1/withdrawals/{withdrawalId}'.format(withdrawalId=withdrawalId))
+
+    def get_sub_user_page(self, **kwargs):
+        """
+        https://docs.kucoin.com/#get-paginated-list-of-sub-accounts
+        :param kwargs: [optional] currentPage , pageSize
+        :return:
+        {
+            "currentPage":1,
+            "pageSize":100,
+            "totalNum":1,
+            "totalPage":1,
+            "items":[
+                {
+                    "userId":"635002438793b80001dcc8b3",
+                    "uid":62356,
+                    "subName":"margin01",
+                    "status":2,
+                    "type":4,
+                    "access":"Margin",
+                    "createdAt":1666187844000,
+                    "remarks":null
+                }
+            ]
+        }
+        """
+        params = {}
+        if kwargs:
+            params.update(kwargs)
+        return self._request('GET', '/api/v2/sub/user', params=params)
+
+    def get_account_summary_info(self):
+        """
+        https://docs.kucoin.com/#get-account-summary-info-v2
+        :return:
+        {
+            "level" : 0,
+            "subQuantity" : 5,
+            "maxDefaultSubQuantity" : 5,
+            "maxSubQuantity" : 5,
+
+            "spotSubQuantity" : 5,
+            "marginSubQuantity" : 5,
+            "futuresSubQuantity" : 5,
+
+            "maxSpotSubQuantity" : 0,
+            "maxMarginSubQuantity" : 0,
+            "maxFuturesSubQuantity" : 0
+        }
+        """
+        return self._request('GET', '/api/v2/user-info')
+
+    def create_sub_account(self, password, sub_name, access, **kwargs):
+        """
+        https://docs.kucoin.com/#create-sub-account-v2
+        :param password: Password(7-24 characters, must contain letters and numbers, cannot only contain numbers or include special characters)
+        :type: str
+        :param sub_name: Sub-account name(must contain 7-32 characters, at least one number and one letter. Cannot contain any spaces.)
+        :type: str
+        :param access: Permission (types include Spot, Futures, Margin permissions, which can be used alone or in combination).
+        :type: str
+        :param kwargs:  [Optional]  remarks
+        :return:
+         {
+            "uid": 9969082973,
+            "subName": "AAAAAAAAAA0007",
+            "remarks": "remark",
+            "access": "Spot"
+         }
+        """
+        params = {
+            'password': password,
+            'subName': sub_name,
+            'access': access
+        }
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v2/sub/user/created', params=params)
+
+    def get_sub_account_api_list(self, sub_name, **kwargs):
+        """
+        https://docs.kucoin.com/#get-sub-account-spot-api-list
+        :param sub_name: Sub-account name.
+        :type: str
+        :param kwargs: [optional] apiKey
+        :return:
+        {
+            "subName": "AAAAAAAAAAAAA0022",
+            "remark": "hytest01-01",
+            "apiKey": "63032453e75087000182982b",
+            "permission": "General",
+            "ipWhitelist": "",
+            "createdAt": 1661150291000
+        }
+        """
+        params = {
+            'subName': sub_name
+        }
+        if kwargs:
+            params.update(kwargs)
+        return self._request('GET', '/api/v1/sub/api-key', params=params)
+
+    def create_apis_for_sub_account(self, sub_name, passphrase, remark, **kwargs):
+        """
+        https://docs.kucoin.com/#create-spot-apis-for-sub-account
+        :param sub_name: Sub-account name(must contain 7-32 characters, at least one number and one letter. Cannot contain any spaces.)
+        :type: str
+        :param passphrase: Password(Must contain 7-32 characters. Cannot contain any spaces.)
+        :type: str
+        :param remark: Remarks(1~24 characters)
+        :type: str
+        :param kwargs:  [Optional]  permission, ipWhitelist, expire
+        :return:
+         {
+            "subName": "AAAAAAAAAA0007",
+            "remark": "remark",
+            "apiKey": "630325e0e750870001829864",
+            "apiSecret": "110f31fc-61c5-4baf-a29f-3f19a62bbf5d",
+            "passphrase": "passphrase",
+            "permission": "General",
+            "ipWhitelist": "",
+            "createdAt": 1661150688000
+         }
+        """
+        params = {
+            'subName': sub_name,
+            'passphrase': passphrase,
+            'remark': remark
+        }
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/sub/api-key', params=params)
+
+    def modify_sub_account_apis(self, sub_name, api_key, passphrase, **kwargs):
+        """
+        https://docs.kucoin.com/#modify-sub-account-spot-apis
+        :param sub_name: Sub-account name
+        :type: str
+        :param passphrase: Password of API key
+        :type: str
+        :param api_key: API-Key(Sub-account APIKey)
+        :type: str
+        :param kwargs:  [Optional]  permission, ipWhitelist, expire
+        :return:
+         {
+            "subName": "AAAAAAAAAA0007",
+            "apiKey": "630329b4e7508700018298c5",
+            "permission": "General",
+            "ipWhitelist": "127.0.0.1",
+         }
+        """
+        params = {
+            'subName': sub_name,
+            'passphrase': passphrase,
+            'apiKey': api_key
+        }
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/sub/api-key/update', params=params)
+
+    def delete_sub_account_apis(self, sub_name, api_key, passphrase):
+        """
+        https://docs.kucoin.com/#delete-sub-account-spot-apis
+        :param sub_name: Sub-account name(The sub-account name corresponding to the API key)
+        :type: str
+        :param passphrase: Password(Password of the API key)
+        :type: str
+        :param api_key: API-Key(API key to be deleted)
+        :type: str
+        :return:
+         {
+           "subName": "AAAAAAAAAA0007",
+           "apiKey": "630325e0e750870001829864"
+         }
+        """
+        params = {
+            'subName': sub_name,
+            'passphrase': passphrase,
+            'apiKey': api_key
+        }
+
+        return self._request('DELETE', '/api/v1/sub/api-key', params=params)
+
+    def get_sub_account_page_info(self, **kwargs):
+        """
+        https://docs.kucoin.com/#get-paginated-sub-account-information
+        :param kwargs: [optional] currentPage , pageSize
+        :return:
+        {
+            "currentPage": 1,
+            "pageSize": 10,
+            "totalNum": 14,
+            "totalPage": 2,
+            "items": [
+                {
+                    "subUserId": "635002438793b80001dcc8b3",
+                    "subName": "margin03",
+                    "mainAccounts": [
+                        {
+                            "currency": "00",
+                            "balance": "0",
+                            "available": "0",
+                            "holds": "0",
+                            "baseCurrency": "BTC",
+                            "baseCurrencyPrice": "125.63",
+                            "baseAmount": "0"
+                        }
+                    ]
+                }
+            ]
+        }
+        """
+        params = {}
+        if kwargs:
+            params.update(kwargs)
+        return self._request('GET', '/api/v2/sub-accounts', params=params)
+
+    def get_hf_account_ledgers(self, **kwargs):
+        """
+        https://docs.kucoin.com/spot-hf/#account-ledger-in-high-frequency-trading-accounts
+        :param kwargs: [optional] currency, direction, bizType, lastId, limit, startAt, endAt
+        :return:
+        [
+            {
+                "id": "42852417537",
+                "currency": "CSP",
+                "amount": "1.00000000",
+                "fee": "0.00000000",
+                "balance": "99999986.99999999",
+                "accountType": "TRADE_HF",
+                "bizType": "TRADE_EXCHANGE",
+                "direction": "in",
+                "createdAt": "1661347205743",
+                "context": "{'symbol':'CSP-USDT','orderId':'6306257dd9180300014c8d47','tradeId':'609522034689'}"
+            },
+            {
+                "id": "42852401152",
+                "currency": "CSP",
+                "amount": "1.00000000",
+                "fee": "0.00000000",
+                "balance": "99999985.99999999",
+                "accountType": "TRADE_HF",
+                "bizType": "TRADE_EXCHANGE",
+                "direction": "out",
+                "createdAt": "1661347205743",
+                "context": "{'symbol':'CSP-USDT','orderId':'63062585d9180300014c8d50','tradeId':'609522034689'}"
+            }
+        ]
+        """
+        params = {}
+        if kwargs:
+            params.update(kwargs)
+        return self._request('GET', '/api/v1/hf/accounts/ledgers', params=params)
+
+    def transfer_to_hf_account(self, client_oid, currency, from_payer, amount):
+        """
+        transfer to the high-frequency account,return high-frequency account info.
+        :param client_oid: Client Order Id，a unique identifier created by the user, using UUID is recommended
+        :type: str
+        :param currency: currency
+        :type: str
+        :param from_payer: Payment account type: main(main account), trade(trading account), trade_hf(high-frequency trading account)
+        :type: str
+        :param amount: Transfer amount, the precision is the precision of the currency multiplied by a positive integer
+        :type: float
+        :return:
+        [
+            {
+                "balance": "3027.25165335",
+                "available": "3027.25165335",
+                "holds": "0",
+                "currency": "USDT",
+                "id": "2560047104",
+                "type": "trade_hf"
+            }
+        ]
+        """
+        params1 = {
+            'clientOid': client_oid,
+            'currency': currency,
+            'from': from_payer,
+            'amount': amount,
+            'to': 'trade_hf'
+        }
+        self._request('POST', '/api/v2/accounts/inner-transfer', params=params1)
+        params2 = {
+            'currency': currency,
+            'type': 'trade_hf'
+        }
+        return self._request('GET', '/api/v1/accounts', params=params2)

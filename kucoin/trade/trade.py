@@ -732,3 +732,615 @@ class TradeData(KucoinBaseRestApi):
         }
         """
         return self._request('GET', f'/api/v1/order/client-order/{clientOid}')
+
+    def create_limit_hf_order(self, symbol, side, size, price, clientOid='', **kwargs):
+        """
+        https://docs.kucoin.com/spot-hf/#place-hf-order
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param side: place direction buy or sell (Mandatory)
+        :type: str
+        :param size: amount of base currency to buy or sell (Mandatory)
+        :type: str
+        :param price: price per base currency (Mandatory)
+        :type: str
+        :param clientOid: Unique order id created by users to identify their orders, e.g. UUID. (Mandatory)
+        :type: str
+        :param kwargs:  Fill in parameters with reference documents
+        :return: {'orderId': '5d9ee461f24b80689797fd04'}
+        """
+        params = {
+            'symbol': symbol,
+            'size': size,
+            'side': side,
+            'price': price,
+            'type': "limit"
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/hf/orders', params=params)
+
+    def create_hf_market_order(self, symbol, side, clientOid='', **kwargs):
+        """
+        https://docs.kucoin.com/spot-hf/#place-hf-order
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param side: place direction buy or sell (Mandatory)
+        :type: str
+        :param clientOid: Unique order id created by users to identify their orders, e.g. UUID. (Mandatory)
+        :type: str
+        :param kwargs:  Fill in parameters with reference documents
+        :return: {'orderId': '5d9ee461f24b80689797fd04'}
+        """
+        params = {
+            'symbol': symbol,
+            'side': side,
+            'type': "market"
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/hf/orders', params=params)
+
+    def sync_create_limit_hf_order(self, symbol, side, size, price, clientOid='', **kwargs):
+        """
+        https://docs.kucoin.com/spot-hf/#sync-place-hf-order
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param side: place direction buy or sell (Mandatory)
+        :type: str
+        :param size: amount of base currency to buy or sell (Mandatory)
+        :type: str
+        :param price: price per base currency (Mandatory)
+        :type: str
+        :param clientOid: Unique order id created by users to identify their orders, e.g. UUID. (Mandatory)
+        :type: str
+        :param kwargs:  Fill in parameters with reference documents
+        :return:
+        {
+            "orderId": "6d539dc614db3",
+            "orderTime": "1507725176595",//order time
+            "originSize": "10.01",
+            "dealSize": "2.01",
+            "remainSize": "8",
+            "canceledSize": "0",
+            "status": "open", //open: the order is active: the order has been completed
+            "matchTime": "1507725176595" //begin match time
+        }
+        """
+        params = {
+            'symbol': symbol,
+            'size': size,
+            'side': side,
+            'price': price,
+            'type': "limit"
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/hf/orders/sync', params=params)
+
+    def sync_create_hf_market_order(self, symbol, side, clientOid='', **kwargs):
+        """
+        https://docs.kucoin.com/spot-hf/#sync-place-hf-order
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param side: place direction buy or sell (Mandatory)
+        :type: str
+        :param clientOid: Unique order id created by users to identify their orders, e.g. UUID. (Mandatory)
+        :type: str
+        :param kwargs:  Fill in parameters with reference documents
+        :return:
+        {
+            "orderId": "6d539dc614db3",
+            "orderTime": "1507725176595",//order time
+            "originSize": "10.01",
+            "dealSize": "2.01",
+            "remainSize": "8",
+            "canceledSize": "0",
+            "status": "open", //open: the order is active: the order has been completed
+            "matchTime": "1507725176595" //begin match time
+        }
+        """
+        params = {
+            'symbol': symbol,
+            'side': side,
+            'type': "market"
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/hf/orders/sync', params=params)
+
+    def multi_create_hf_order(self, orderList):
+        """
+        https://docs.kucoin.com/spot-hf/#place-multiple-hf-orders
+        :param orderList: order list
+        :type: list
+        :return:
+        [
+          {
+              "orderId": "641d669c9ca34800017a2a3c",
+              "success": true
+          },
+          {
+              "orderId": "641d669c9ca34800017a2a45",
+              "success": true
+          }
+        ]
+        """
+        params = {
+            'orderList': orderList
+        }
+        return self._request('POST', '/api/v1/hf/orders/multi', params=params)
+
+    def sync_multi_create_hf_order(self, orderList):
+        """
+        https://docs.kucoin.com/spot-hf/#sync-place-multiple-hf-orders
+        :param orderList: order list
+        :type: list
+        :return:
+        [
+          {
+              "orderId": "641d67ea162d47000160bfb8",
+              "orderTime": 1679648746796,
+              "originSize": "1",
+              "dealSize": "0",
+              "remainSize": "1",
+              "canceledSize": "0",
+              "status": "open",
+              "matchTime": 1679648746443,
+              "success": true
+          },
+          {
+              "orderId": "641d67eb162d47000160bfc0",
+              "orderTime": 1679648747369,
+              "originSize": "1",
+              "dealSize": "0",
+              "remainSize": "1",
+              "canceledSize": "0",
+              "status": "open",
+              "matchTime": 1679648746644,
+              "success": true
+          }
+        ]
+        """
+        params = {
+            'orderList': orderList
+        }
+        return self._request('POST', '/api/v1/hf/orders/multi/sync', params=params)
+
+    def modify_hf_order(self, symbol, clientOid='', **kwargs):
+        """
+        https://docs.kucoin.com/spot-hf/#modify-order
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param clientOid: Unique order id created by users to identify their orders, e.g. UUID. (Mandatory)
+        :type: str
+        :param kwargs:  Fill in parameters with reference documents
+        :return:
+        {
+            "newOrderId": "6d539dc614db3"
+        }
+        """
+        params = {
+            'symbol': symbol
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/hf/orders/alter', params=params)
+
+    def cancel_hf_order_by_order_id(self, symbol, orderId):
+        """
+        https://docs.kucoin.com/spot-hf/#cancel-orders-by-orderid
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param orderId: Path parameter，Order Id unique identifier (Mandatory)
+        :type: str
+        :return:
+        {
+            "orderId": "6d539dc614db3"
+        }
+        """
+        params = {
+            'symbol': symbol
+        }
+        return self._request('DELETE', '/api/v1/hf/orders/{orderId}'.format(orderId=orderId), params=params)
+
+    def sync_cancel_hf_order_by_order_id(self, symbol, orderId):
+        """
+        https://docs.kucoin.com/spot-hf/#sync-cancel-orders-by-orderid
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param orderId: Path parameter，Order Id unique identifier (Mandatory)
+        :type: str
+        :return:
+        {
+            "orderId": "641d67ea162d47000160bfb8",
+            "originSize": "1",
+            "dealSize": "0",
+            "remainSize": "1",
+            "canceledSize": "0",
+            "status": "done"
+        }
+        """
+        params = {
+            'symbol': symbol
+        }
+        return self._request('DELETE', '/api/v1/hf/orders/sync/{orderId}'.format(orderId=orderId), params=params)
+
+    def cancel_hf_order_by_client_id(self, symbol, clientOid):
+        """
+        https://docs.kucoin.com/spot-hf/#cancel-order-by-clientoid
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param clientOid: Path parameter，an identifier created by the (Mandatory)
+        :type: str
+        :return:
+        {
+            "clientOid": "6d539dc614db3"
+        }
+        """
+        params = {
+            'symbol': symbol
+        }
+        return self._request('DELETE', '/api/v1/hf/orders/client-order/{clientOid}'.format(clientOid=clientOid), params=params)
+
+    def sync_cancel_hf_order_by_client_id(self, symbol, clientOid):
+        """
+        https://docs.kucoin.com/spot-hf/#sync-cancel-orders-by-clientoid
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param clientOid: Path parameter，an identifier created by the (Mandatory)
+        :type: str
+        :return:
+        {
+            "orderId": "641d67ea162d47000160bfb8",
+            "originSize": "1",
+            "dealSize": "0",
+            "remainSize": "1",
+            "canceledSize": "0",
+            "status": "done"
+        }
+        """
+        params = {
+            'symbol': symbol
+        }
+        return self._request('DELETE', '/api/v1/hf/orders/sync/client-order/{clientOid}'.format(clientOid=clientOid), params=params)
+
+    def cancel_hf_order_specified_number_by_order_id(self, symbol, orderId, cancelSize):
+        """
+        https://docs.kucoin.com/spot-hf/#cancel-specified-number-of-orders-by-orderid
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param orderId: Order id of the cancelled order
+        :type: str
+        :param cancelSize: canceled size
+        :type: str
+        :return:
+        {
+            "orderId": "6d539dc614db3",
+            "cancelSize": "10.01"
+        }
+        """
+        params = {
+            'symbol': symbol,
+            'cancelSize': cancelSize
+        }
+        return self._request('DELETE', '/api/v1/hf/orders/cancel/{orderId}'.format(orderId=orderId), params=params)
+
+    def cancel_all_hf_orders(self, symbol):
+        """
+        https://docs.kucoin.com/spot-hf/#cancel-all-hf-orders-by-symbol
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :return: "success"
+        """
+        params = {
+            'symbol': symbol
+        }
+        return self._request('DELETE', '/api/v1/hf/orders', params=params)
+
+    def get_active_hf_orders(self, symbol):
+        """
+        https://docs.kucoin.com/spot-hf/#obtain-list-of-active-hf-orders
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :return:
+        [
+            "id": "5c35c02703aa673ceec2a168",
+            "symbol": "BTC-USDT",
+            "opType": "DEAL",
+            "type": "limit",
+            "side": "buy",
+            "price": "10",
+            "size": "2",
+            "funds": "0",
+            "dealFunds": "0.166",
+            "dealSize": "2",
+            "fee": "0",
+            "feeCurrency": "USDT",
+            "stp": "",
+            "timeInForce": "GTC",
+            "postOnly": false,
+            "hidden": false,
+            "iceberg": false,
+            "visibleSize": "0",
+            "cancelAfter": 0,
+            "channel": "IOS",
+            "clientOid": "",
+            "remark": "",
+            "tags": "",
+            "active": true,
+            "inOrderBook": true,
+            "cancelExist": false,
+            "createdAt": 1547026471000,
+            "lastUpdatedAt": 1547026471001,
+            "tradeType": "TRADE",
+            "cancelledSize": "0",
+            "cancelledFunds": "0",
+            "remainSize": "0",
+            "remainFunds": "0"
+            }
+        ]
+        """
+        params = {
+            'symbol': symbol
+        }
+        return self._request('GET', '/api/v1/hf/orders/active', params=params)
+
+    def get_symbol_with_active_hf_orders(self):
+        """
+        https://docs.kucoin.com/spot-hf/#obtain-list-of-symbol-with-active-hf-orders
+        :return:
+        {
+            "symbols": ["BTC-USDT"]
+        }
+        """
+        return self._request('GET', '/api/v1/hf/orders/active/symbols')
+
+    def get_filled_hf_order(self, symbol, **kwargs):
+        """
+        https://docs.kucoin.com/spot-hf/#obtain-list-of-filled-hf-orders
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param kwargs:  Fill in parameters with reference documents
+        :return:
+        {
+          "lastId":2682265600,
+          "items":[
+             {
+                "id":"63074a5a27ecbe0001e1f3ba",
+                "symbol":"CSP-USDT",
+                "opType":"DEAL",
+                "type":"limit",
+                "side":"sell",
+                "price":"0.1",
+                "size":"0.1",
+                "funds":"0.01",
+                "dealSize":"0",
+                "dealFunds":"0",
+                "fee":"0",
+                "feeCurrency":"USDT",
+                "stp":"",
+                "timeInForce":"GTC",
+                "postOnly":false,
+                "hidden":false,
+                "iceberg":false,
+                "visibleSize":"0",
+                "cancelAfter":0,
+                "channel":"API",
+                "clientOid":"",
+                "remark":"",
+                "tags":"",
+                "cancelExist":true,
+                "createdAt":1661422170924,
+                "lastUpdatedAt":1661422196926,
+                "tradeType":"TRADE",
+                "inOrderBook":false,
+                "active":false,
+                "cancelledSize": "0",
+                "cancelledFunds": "0",
+                "remainSize": "0",
+                "remainFunds": "0"
+             }
+          ]
+        }
+        """
+        params = {
+            'symbol': symbol
+        }
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('GET', '/api/v1/hf/orders/done', params=params)
+
+    def get_single_hf_order(self, symbol, orderId):
+        """
+        https://docs.kucoin.com/spot-hf/#details-of-a-single-hf-order
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param orderId: Order id of the cancelled order
+        :type: str
+        :return:
+        {
+            "id": "5f3113a1c9b6d539dc614dc6",
+            "symbol": "KCS-BTC",
+            "opType": "DEAL",
+            "type": "limit",
+            "side": "buy",
+            "price": "0.00001",
+            "size": "1",
+            "funds": "0",
+            "dealFunds": "0",
+            "dealSize": "0",
+            "fee": "0",
+            "feeCurrency": "BTC",
+            "stp": "",
+            "timeInForce": "GTC",
+            "postOnly": false,
+            "hidden": false,
+            "iceberg": false,
+            "visibleSize": "0",
+            "cancelAfter": 0,
+            "channel": "API",
+            "clientOid": "6d539dc614db312",
+            "remark": "",
+            "tags": "",
+            "active": true,
+            "inOrderBook": false,
+            "cancelExist": false,
+            "createdAt": 1547026471000,
+            "lastUpdatedAt": 1547026471001,
+            "tradeType": "TRADE",
+            "cancelledSize": "0",
+            "cancelledFunds": "0",
+            "remainSize": "0",
+            "remainFunds": "0"
+        }
+        """
+        params = {
+            'symbol': symbol
+        }
+        return self._request('GET', '/api/v1/hf/orders/{orderId}'.format(orderId=orderId), params=params)
+
+    def get_single_hf_order_by_client_oid(self, symbol, clientOid):
+        """
+        https://docs.kucoin.com/spot-hf/#obtain-details-of-a-single-hf-order-using-clientoid
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param clientOid: Path parameter，an identifier created by the client
+        :type: str
+        :return:
+        {
+            "id": "5f3113a1c9b6d539dc614dc6",
+            "symbol": "KCS-BTC",
+            "opType": "DEAL",
+            "type": "limit",
+            "side": "buy",
+            "price": "0.00001",
+            "size": "1",
+            "funds": "0",
+            "dealFunds": "0",
+            "dealSize": "0",
+            "fee": "0",
+            "feeCurrency": "BTC",
+            "stp": "",
+            "timeInForce": "GTC",
+            "postOnly": false,
+            "hidden": false,
+            "iceberg": false,
+            "visibleSize": "0",
+            "cancelAfter": 0,
+            "channel": "API",
+            "clientOid": "6d539dc614db312",
+            "remark": "",
+            "tags": "",
+            "active": true,
+            "inOrderBook": false,
+            "cancelExist": false,
+            "createdAt": 1547026471000,
+            "lastUpdatedAt": 1547026471001,
+            "tradeType": "TRADE",
+            "cancelledSize": "0",
+            "cancelledFunds": "0",
+            "remainSize": "0",
+            "remainFunds": "0"
+        }
+        """
+        params = {
+            'symbol': symbol
+        }
+        return self._request('GET', '/api/v1/hf/orders/client-order/{clientOid}'.format(clientOid=clientOid), params=params)
+
+    def set_hf_auto_cancel(self, timeout, **kwargs):
+        """
+        https://docs.kucoin.com/spot-hf/#hf-auto-cancel-setting
+        :param timeout: Auto cancel order trigger setting time, the unit is second.
+                        range: timeout=-1 (meaning unset) or 5 <= timeout <= 86400. For example,
+                        timeout=5 means that the order will be automatically canceled if no user request is received for more than 5 seconds.
+                        When this parameter is changed, the previous setting will be overwritten. (Mandatory)
+        :param kwargs:  Fill in parameters with reference documents
+        :return:
+        {
+            "currentTime": 1682010526,
+            "triggerTime": 1682010531
+        }
+        """
+        params = {
+            'timeout': timeout
+        }
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/hf/orders/dead-cancel-all', params=params)
+
+    def query_hf_auto_cancel_setting(self):
+        """
+        https://docs.kucoin.com/spot-hf/#hf-auto-cancel-order-setting-query
+        :return:
+        {
+            "timeout": 5,
+            "symbols": "BTC-USDT",
+            "currentTime": 1682010526,
+            "triggerTime": 1682010531
+        }
+        """
+        return self._request('GET', '/api/v1/hf/orders/dead-cancel-all/query')
+
+    def get_hf_transaction_records(self, symbol, **kwargs):
+        """
+        https://docs.kucoin.com/spot-hf/#hf-transaction-records
+        :param symbol: Only returns order information for the specified trading pair
+        :param kwargs:  Fill in parameters with reference documents
+        :return:
+        {
+          "items":[
+             {
+                "id":2678765568,
+                "symbol":"BTC-ETC",
+                "tradeId":616179312641,
+                "orderId":"6306cf6e27ecbe0001e1e03a",
+                "counterOrderId":"6306cf4027ecbe0001e1df4d",
+                "side":"buy",
+                "liquidity":"taker",
+                "forceTaker":false,
+                "price":"1",
+                "size":"1",
+                "funds":"1",
+                "fee":"0.00021",
+                "feeRate":"0.00021",
+                "feeCurrency":"USDT",
+                "stop":"",
+                "tradeType":"TRADE",
+                "type":"limit",
+                "createdAt":1661390702919
+             }
+          ],
+          "lastId":2678765568
+        }
+        """
+        params = {
+            'symbol': symbol
+        }
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('GET', '/api/v1/hf/fills', params=params)
