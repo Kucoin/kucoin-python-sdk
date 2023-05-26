@@ -176,26 +176,6 @@ class MarketData(KucoinBaseRestApi):
         }
         return self._request('GET', '/api/v3/market/orderbook/level2', params=params)
 
-    def get_aggregated_order(self, symbol):
-        """
-        https://docs.kucoin.com/#get-full-order-book-aggregated
-        :param symbol: symbol (Mandatory)
-        :type: str
-        :return:
-        {
-            "sequence": "3262786978",
-            "time": 1550653727731,
-            "bids": [["6500.12", "0.45054140"],
-                     ["6500.11", "0.45054140"]],  //[price，size]
-            "asks": [["6500.16", "0.57753524"],
-                     ["6500.15", "0.57753524"]]
-        }
-        """
-        params = {
-            'symbol': symbol
-        }
-        return self._request('GET', '/api/v2/market/orderbook/level2', params=params)
-
     def get_atomic_orderv3(self, symbol):
         """
         https://docs.kucoin.com/#get-full-order-book-atomic
