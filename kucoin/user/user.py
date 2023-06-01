@@ -314,7 +314,7 @@ class UserData(KucoinBaseRestApi):
         """
         return self._request('GET', '/api/v1/sub-accounts')
 
-    def get_transferable(self, currency, account_type):
+    def get_transferable(self, currency, account_type, **kwargs):
         """
         https://docs.kucoin.com/#get-the-transferable
         :param currency: currency (Mandatory)
@@ -334,6 +334,8 @@ class UserData(KucoinBaseRestApi):
             'currency': currency,
             'type': account_type
         }
+        if kwargs:
+            params.update(kwargs)
         return self._request('GET', '/api/v1/accounts/transferable', params=params)
 
     def transfer_master_sub(self, currency, amount, direction, subUserId, clientOid='', accountType=None,
