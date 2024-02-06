@@ -19,7 +19,23 @@ Features
 
 update
 ----------
-- 2022 02/21
+- 2024 02/07
+ 1. margin.get_etf_info: `Get Leveraged Token Info <https://www.kucoin.com/docs/rest/margin-trading/margin-info/get-leveraged-token-info>`_.
+ 2. margin.get_margin_account_Detail: `Get Account Detail - Cross Margin <https://www.kucoin.com/docs/rest/funding/funding-overview/get-account-detail-cross-margin>`_.
+ 3. margin.get_isolated_margin_account_detail: `Get Account Detail - Isolated Margin <https://www.kucoin.com/docs/rest/funding/funding-overview/get-account-detail-isolated-margin>`_.
+ 4. margin.get_margin_currencies: `Get Cross/Isolated Margin Risk Limit/Currency config <https://www.kucoin.com/docs/rest/margin-trading/margin-info/get-cross-isolated-margin-risk-limit-currency-config>`_.
+ 5. trade.create_oco_order: `Place Order <https://www.kucoin.com/docs/rest/spot-trading/oco-order/place-order>`_.
+ 6. trade.cancel_oco_order: `Cancel Order by orderId <https://www.kucoin.com/docs/rest/spot-trading/oco-order/cancel-order-by-orderid>`_.
+ 7. trade.cancel_oco_order_by_clientOid: `Cancel Order by clientOid <https://www.kucoin.com/docs/rest/spot-trading/oco-order/cancel-order-by-clientoid>`_.
+ 8. trade.cancel_all_oco_orders: `Cancel Multiple Orders <https://www.kucoin.com/docs/rest/spot-trading/oco-order/cancel-multiple-orders>`_.
+ 9. trade.get_oco_order_by_orderId: `Get Order Info by orderId <https://www.kucoin.com/docs/rest/spot-trading/oco-order/get-order-info-by-orderid>`_.
+ 10. trade.get_oco_order_by_client_oid: `Get Order Info by clientOid <https://docs.kucoin.com/spot-hf/#obtain-details-of-a-single-hf-order-using-clientoid>`_.
+ 11. trade.get_oco_orders: `Get Order List <https://www.kucoin.com/docs/rest/spot-trading/oco-order/get-order-list>`_.
+ 12. trade.get_oco_order_details: `Get Order Details by orderId <https://www.kucoin.com/docs/rest/spot-trading/oco-order/get-order-details-by-orderid>`_.
+ 13. trade.cancel_all_hf_orders: `Cancel all HF orders <https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/cancel-all-hf-orders>`_.
+ 14. customized websocket: ./kucoin/example_customized_ws_private.py | kucoin/example_customized_ws_public.py
+  - sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
 
 Quick Start
 -----------
@@ -83,34 +99,6 @@ or `Generate an API Key in Sandbox <https://sandbox.kucoin.com/account/api>`_ an
 
 Websockets
 ----------
-
-.. code:: python
-
-    import asyncio
-    from kucoin.client import WsToken
-    from kucoin.ws_client import KucoinWsClient
-
-
-    async def main():
-        async def deal_msg(msg):
-            if msg['topic'] == '/spotMarket/level2Depth5:BTC-USDT':
-                print(msg["data"])
-            elif msg['topic'] == '/spotMarket/level2Depth5:KCS-USDT':
-                print(f'Get KCS level3:{msg["data"]}')
-
-        # is public
-        client = WsToken()
-        #is private
-        # client = WsToken(key='', secret='', passphrase='', is_sandbox=False, url='')
-        # is sandbox
-        # client = WsToken(is_sandbox=True)
-        ws_client = await KucoinWsClient.create(None, client, deal_msg, private=False)
-        # await ws_client.subscribe('/market/ticker:BTC-USDT,ETH-USDT')
-        await ws_client.subscribe('/spotMarket/level2Depth5:BTC-USDT,KCS-USDT')
-        while True:
-            await asyncio.sleep(60, loop=loop)
-
-
-    if __name__ == "__main__":
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
+- ./kucoin/example_customized_ws_private.py
+- ./kucoin/example_customized_ws_public.py
+- ./kucoin/example_default_ws_public.py

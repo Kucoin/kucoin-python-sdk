@@ -13,7 +13,7 @@ class ConnectWebsocket:
     MAX_RECONNECTS = 5
     MAX_RECONNECT_SECONDS = 60
 
-    def __init__(self, loop, client, callback, private=False):
+    def __init__(self, loop, client, callback, private=False,sock=None):
         self._loop = loop
         self._client = client
         self._callback = callback
@@ -24,6 +24,7 @@ class ConnectWebsocket:
         self._last_ping = None
         self._socket = None
         self._topics = []
+        self._sock=sock
         asyncio.ensure_future(self.run_forever(), loop=self._loop)
 
     @property
@@ -37,7 +38,7 @@ class ConnectWebsocket:
         self._ws_details = self._client.get_ws_token(self._private)
         logger.debug(self._ws_details)
 
-        async with websockets.connect(self.get_ws_endpoint(), ssl=self.get_ws_encryption()) as socket:
+        async with websockets.connect(self.get_ws_endpoint(), ssl=self.get_ws_encryption(),sock=self._sock) as socket:
             self._socket = socket
             self._reconnect_num = 0
 

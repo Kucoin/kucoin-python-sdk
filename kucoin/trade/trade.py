@@ -98,7 +98,7 @@ class TradeData(KucoinBaseRestApi):
 
         return self._request('POST', '/api/v1/orders', params=params)
 
-    def create_limit_stop_order(self, symbol, side, size, price, stopPrice,  clientOid="", **kwargs):
+    def create_limit_stop_order(self, symbol, side, size, price, stopPrice, clientOid="", **kwargs):
         params = {
             'symbol': symbol,
             'size': size,
@@ -278,7 +278,7 @@ class TradeData(KucoinBaseRestApi):
         if orderIds:
             params["orderIds"] = orderIds
 
-        return self._request('DELETE', f'/api/v1/stop-order/cancel',params=params)
+        return self._request('DELETE', f'/api/v1/stop-order/cancel', params=params)
 
     def cancel_order(self, orderId):
         """
@@ -1344,3 +1344,244 @@ class TradeData(KucoinBaseRestApi):
             params.update(kwargs)
 
         return self._request('GET', '/api/v1/hf/fills', params=params)
+
+    def create_oco_order(self, symbol, side, price, stopPrice, size, limitPrice, clientOid="", remark=None):
+        """
+        Place Order
+        Do not include extra spaces in JSON strings in request body.
+        Limitation
+        The maximum untriggered stop orders for a single trading pair in one account is 20.
+        https://www.kucoin.com/docs/rest/spot-trading/oco-order/place-order
+
+        :param symbol: symbol, such as, ETH-BTC
+        :param side: buy or sell
+        :param price: Specify price for currency
+        :param stopPrice: trigger price
+        :param size: Specify quantity for currency
+        :param limitPrice: The limit order price after take-profit and stop-loss are triggered
+        :param clientOid: Client Order Id，unique identifier created by the user, the use of UUID is recommended, e.g. UUID, with a maximum length of 128 bits
+        :param remark: Order placement remarks, length cannot exceed 100 characters (UTF-8)
+        :return:
+        {
+             "orderId": "6572fdx65723280007deb5ex"
+        }
+        """
+        params = {
+            'symbol': symbol,
+            'side': side,
+            'price': price,
+            'size': size,
+            'stopPrice': stopPrice,
+            'limitPrice': limitPrice,
+            'tradeType': 'TRADE',
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if remark:
+            params['remark'] = remark
+
+        return self._request('POST', '/api/v3/oco/order', params=params)
+
+    def cancel_oco_order(self, orderId):
+        """
+        Cancel Order by orderId
+        Request via this endpoint to cancel a single oco order previously placed.
+        You will receive cancelledOrderIds field once the system has received the cancellation request. The cancellation request will be processed by the matching engine in sequence. To know if the request is processed (successfully or not), you may check the order status or the update message from the pushes.
+        https://www.kucoin.com/docs/rest/spot-trading/oco-order/cancel-order-by-orderid
+        :param orderId: Path parameter, Order Id unique identifier
+        :type: str
+        :return:
+        {
+            "cancelledOrderIds": [ //List of two order IDs related to the canceled OCO order
+                "vs9hqpbivnbpkfdj003qlxxx",
+                "vs9hqpbivnbpkfdj003qlxxx"
+            ]
+        }
+        """
+        return self._request('DELETE', f'/api/v3/oco/order/{orderId}')
+
+    def cancel_oco_order_by_clientOid(self, clientOid):
+        """
+        Cancel Order by clientOid
+        https://www.kucoin.com/docs/rest/spot-trading/oco-order/cancel-order-by-clientoid
+        :param clientOid: Path parameter，Unique order id created by users to identify their orders
+        :return:
+        {
+            "cancelledOrderIds": [ //List of two order IDs related to the canceled OCO order
+                "vs9hqpbivnbpkfdj003qlxxx",
+                "vs9hqpbivnbpkfdj003qlxxx"
+            ]
+        }
+        """
+        return self._request('DELETE', f'/api/v3/oco/client-order/{clientOid}')
+
+    def cancel_all_oco_orders(self, symbol=None, orderIds=None):
+        """
+        Cancel Multiple Orders
+        This interface can batch cancel OCO orders through orderIds.
+        https://www.kucoin.com/docs/rest/spot-trading/oco-order/cancel-multiple-orders
+
+        :param symbol: trading pair. If not passed, the oco orders of all symbols will be canceled by default.
+        :param orderIds: Specify the order number, there can be multiple orders, separated by commas. If not passed, all oco orders will be canceled by default.
+        :return:
+        {
+          "cancelledOrderIds": [
+              "vs9hqpbivcq5dcu2003o19ta",
+              "vs9hqpbivcq5dcu2003o19tb",
+              "vs9hqpbive99kfdj003ql1j2",
+              "vs9hqpbive99kfdj003ql1j3"
+          ]
+        }
+        """
+        params = {}
+        if symbol:
+            params['symbol']=symbol
+        if orderIds:
+            params['orderIds']=orderIds
+        return self._request('DELETE', '/api/v3/oco/orders', params=params)
+
+    def get_oco_order_by_orderId(self, orderId):
+        """
+        Get Order Info by orderId
+        Request via this interface to get a oco order information via the order ID.
+        https://www.kucoin.com/docs/rest/spot-trading/oco-order/get-order-info-by-orderid
+        :param orderId: Path parameter, Order Id unique identifier
+        :return:
+        {
+          "orderId": "6572fdd65723280007deb5e0",
+          "symbol": "FRM-USDT",
+          "clientOid": "9a05f706a39eff673045b89foco1",
+          "orderTime": 1702034902724,
+          "status": "NEW"
+        }
+        """
+        return self._request('GET', f'api/v3/oco/order/{orderId}')
+
+
+    def get_oco_order_by_client_oid(self, clientOid):
+        """
+        Get Order Info by clientOid
+        https://docs.kucoin.com/spot-hf/#obtain-details-of-a-single-hf-order-using-clientoid
+        :param clientOid: Path parameter，Unique order id created by users to identify their orders
+        :type: str
+        :return:
+        {
+          "orderId": "6572fdd65723280007deb5e0",
+          "symbol": "FRM-USDT",
+          "clientOid": "9a05f706a39eff673045b89foco1",
+          "orderTime": 1702034902724,
+          "status": "NEW"
+        }
+        """
+        return self._request('GET', f'/api/v3/oco/client-order/{clientOid}')
+
+    def get_oco_orders(self,pageSize,currentPage,symbol=None,startAt=None,endAt=None,orderIds=None):
+        """
+        Get Order List
+        Request via this endpoint to get your current OCO order list. Items are paginated and sorted to show the latest first. See the Pagination section for retrieving additional entries after the first page.
+        https://www.kucoin.com/docs/rest/spot-trading/oco-order/get-order-list
+        :param pageSize: Size per page, minimum value 10, maximum value 500 (Mandatory)
+        :param currentPage: Page number, minimum value 1 (Mandatory)
+        :param symbol: Only order information for the specified Symbol is returned
+        :param startAt: Start time (milliseconds)
+        :param endAt: End time (milliseconds)
+        :param orderIds: Specify orderId collection, up to 500 orders
+        :return:
+        {
+          "currentPage": 1,
+          "pageSize": 10,
+          "totalNum": 4,
+          "totalPage": 1,
+          "items": [
+              {
+                  "orderId": "6572fdd65723280007deb5e0",
+                  "symbol": "FRM-USDT",
+                  "clientOid": "9a05f706a39eff673045b89foco1",
+                  "orderTime": 1702034902724,
+                  "status": "NEW"
+              },
+              {
+                  "orderId": "6572fbbea24eca0007c8aaa9",
+                  "symbol": "FRM-USDT",
+                  "clientOid": "afe2d9deeba49f5ffee1792aoco1",
+                  "orderTime": 1702034366305,
+                  "status": "NEW"
+              }
+          ]
+        }
+        """
+        params={
+            'pageSize':pageSize,
+            'currentPage':currentPage
+        }
+        if symbol:
+            params['symbol']=symbol
+        if startAt:
+            params['startAt']=startAt
+        if endAt:
+            params['endAt']=endAt
+        if orderIds:
+            params['orderIds']=orderIds
+
+        return self._request('GET', '/api/v3/oco/orders',params=params)
+
+    def get_oco_order_details(self, orderId):
+        """
+        Get Order Details by orderId
+        Request via this interface to get a oco order detail via the order ID.
+        https://www.kucoin.com/docs/rest/spot-trading/oco-order/get-order-details-by-orderid
+        :param orderId: Path parameter, Order Id unique identifier
+        :type: str
+        :return:
+        {
+            "orderId": "6572fdd65723280007deb5e0",
+            "symbol": "FRM-USDT",
+            "clientOid": "9a05f706a39eff673045b89foco1",
+            "orderTime": 1702034902724,
+            "status": "NEW",
+            "orders": [
+                {
+                    "id": "vs9hqpbivnb5e8p8003ttdf1",
+                    "symbol": "FRM-USDT",
+                    "side": "sell",
+                    "price": "1.00000000000000000000",
+                    "stopPrice": "1.00000000000000000000",
+                    "size": "25.00000000000000000000",
+                    "status": "NEW"
+                },
+                {
+                    "id": "vs9hqpbivnb5e8p8003ttdf2",
+                    "symbol": "FRM-USDT",
+                    "side": "sell",
+                    "price": "3.00000000000000000000",
+                    "stopPrice": "0.06000000000000000000",
+                    "size": "25.00000000000000000000",
+                    "status": "NEW"
+                }
+            ]
+        }
+        """
+        return self._request('GET', f'api/v3/oco/order/details/{orderId}')
+
+    def cancel_all_hf_orders(self):
+        """
+        Cancel all HF orders
+        This endpoint can cancel all HF orders for all symbol.
+        https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/cancel-all-hf-orders
+
+        :return:
+        {
+          "succeedSymbols": [
+            "BTC-USDT",
+            "ETH-USDT"
+          ],
+          "failedSymbols": [
+            {
+                "symbol": "BTC-USDT",
+                "error": "can't cancel, system timeout"
+            }
+          ],
+        }
+        """
+        return self._request('DELETE', '/api/v1/hf/orders/cancelAll')

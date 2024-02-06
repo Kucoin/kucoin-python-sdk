@@ -423,7 +423,7 @@ class MarginData(KucoinBaseRestApi):
             'currency': currency
         }
         return self._request('GET', '/api/v1/margin/trade/last', params=params)
-    
+
     def get_margin_risk_limit(self, marginModel='cross'):
         """
         https://docs.kucoin.com/#margin-trade-data
@@ -760,3 +760,211 @@ class MarginData(KucoinBaseRestApi):
             'loanId': loan_id
         }
         return self._request('POST', '/api/v1/isolated/repay/single', params=params)
+
+    def get_etf_info(self, currency=None):
+        """
+        Get Leveraged Token Info
+        https://www.kucoin.com/docs/rest/margin-trading/margin-info/get-leveraged-token-info
+        :param currency:  if empty query all currencies
+        :return:
+        {
+            "success": true,
+            "code": "200",
+            "msg": "success",
+            "retry": false,
+            "data": [
+              {
+                  "currency": "BTCUP", //currency
+                  "netAsset": 0.001,//Net worth
+                  "targetLeverage": "2-4", //Target leverage
+                  "actualLeverage": "2.33", //Actual leverage
+                  "assetsUnderManagement": //The amount of currency issued
+                  "basket": "-78.671762 XBTUSDTM" //basket information
+              }
+            ]
+        }
+        """
+        params = {}
+        if currency:
+            params["currency"] = currency
+
+        return self._request('GET', '/api/v3/etf/info', params=params)
+
+    def get_margin_account_Detail(self, quoteCurrency=None, queryType=None):
+        """
+        Get Account Detail - Cross Margin
+        https://www.kucoin.com/docs/rest/funding/funding-overview/get-account-detail-cross-margin
+        :param quoteCurrency:  quote currency, currently only supports USDT, KCS, BTC, USDT as default
+        :param queryType:  Query account type (default MARGIN), MARGIN - only query low frequency cross margin account, MARGIN_V2-only query high frequency cross margin account, ALL - consistent aggregate query with the web side
+        :return:
+        {
+            "success": true,
+            "code": "200",
+            "msg": "success",
+            "retry": false,
+            "data": {
+                "timestamp": 1669708513820,
+                "currentPage": 1,
+                "pageSize": 100,
+                "totalNum": 1,
+                "totalPage": 1,
+                "items": [
+                    {
+                        "totalLiabilityOfQuoteCurrency": "0.976", //Total Liability in Quote Currency
+                        "totalAssetOfQuoteCurrency": "1.00", //Total Assets in Quote Currency
+                        "debtRatio": "0.976", //debt ratio
+                        "status": "LIQUIDATION", //Position status; EFFECTIVE-effective, BANKRUPTCY-bankruptcy liquidation, LIQUIDATION-closing, REPAY-repayment, BORROW borrowing
+                        "assets": [
+                            {
+                                "currency": "BTC",
+                                "borrowEnabled": true,
+                                "repayEnabled": true,
+                                "transferEnabled": false,
+                                "borrowed": "0.976",
+                                "totalAsset": "1.00", //Total Assets
+                                "available": "0.024", //Account available assets (total assets - frozen)
+                                "hold": "0", //Account frozen assets
+                                "maxBorrowSize": "0" //The user's remaining maximum loan amount
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+        """
+        params = {}
+        if quoteCurrency:
+            params["quoteCurrency"] = quoteCurrency
+        if queryType:
+            params["queryType"] = queryType
+
+        return self._request('GET', '/api/v3/margin/accounts', params=params)
+
+    def get_isolated_margin_account_detail(self, quoteCurrency=None, queryType=None, symbol=None):
+        """
+        Get Account Detail - Isolated Margin
+        https://www.kucoin.com/docs/rest/funding/funding-overview/get-account-detail-isolated-margin
+        :param quoteCurrency:  quote currency, currently only supports USDT, KCS, BTC, default is USDT
+        :param symbol:  For isolated trading pairs, query all without passing
+        :param queryType:  Query account type (default MARGIN), ISOLATED- - only query low frequency isolated margin account, ISOLATED_V2-only query high frequency isolated margin account, ALL - consistent aggregate query with the web side
+        :return:
+        {
+            "code": "200000",
+            "data": [
+                {
+                    "totalAssetOfQuoteCurrency": "3.4939947",
+                    "totalLiabilityOfQuoteCurrency": "0.00239066",
+                    "timestamp": 1668062174000,
+                    "assets": [
+                        {
+                            "symbol": "MANA-USDT",
+                            "debtRatio": "0",
+                            "status": "BORROW",
+                            "baseAsset": {
+                                "currency": "MANA",
+                                "borrowEnabled": true,
+                                "repayEnabled": true,
+                                "transferEnabled": true,
+                                "borrowed": "0",
+                                "totalAsset": "0",
+                                "available": "0",
+                                "hold": "0",
+                                "maxBorrowSize": "1000"
+                            },
+                            "quoteAsset": {
+                                "currency": "USDT",
+                                "borrowEnabled": true,
+                                "repayEnabled": true,
+                                "transferEnabled": true,
+                                "borrowed": "0",
+                                "totalAsset": "0",
+                                "available": "0",
+                                "hold": "0",
+                                "maxBorrowSize": "50000"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+        """
+        params = {}
+        if quoteCurrency:
+            params["quoteCurrency"] = quoteCurrency
+        if queryType:
+            params["queryType"] = queryType
+        if symbol:
+            params["symbol"] = symbol
+
+        return self._request('GET', '/api/v3/isolated/accounts', params=params)
+
+    def get_margin_currencies(self, isIsolated, currency=None, symbol=None):
+        """
+        Get Cross/Isolated Margin Risk Limit/Currency config
+        https://www.kucoin.com/docs/rest/margin-trading/margin-info/get-cross-isolated-margin-risk-limit-currency-config
+        :param isIsolated:  true - isolated, false - cross ; default false
+        :param symbol:  symbol, required for isolated margin accounts
+        :param currency:  currency
+        :return:
+        // CROSS MARGIN RESPONSES
+        {
+            "success": true,
+            "code": "200",
+            "msg": "success",
+            "retry": false,
+            "data": [
+                {
+                    "timestamp": 1697783812257,
+                    "currency": "XMR",
+                    "borrowMaxAmount": "999999999999999999",
+                    "buyMaxAmount": "999999999999999999",
+                    "holdMaxAmount": "999999999999999999",
+                    "borrowCoefficient": "0.5",
+                    "marginCoefficient": "1",
+                    "precision": 8,
+                    "borrowMinAmount": "0.001",
+                    "borrowMinUnit": "0.001",
+                    "borrowEnabled": true
+                }
+            ]
+        }
+
+        // ISOLATED MARGIN RESPONSES
+        {
+            "success": true,
+            "code": "200",
+            "msg": "success",
+            "retry": false,
+            "data": [
+                {
+                    "timestamp": 1697782543851,
+                    "symbol": "LUNC-USDT",
+                    "baseMaxBorrowAmount": "999999999999999999",
+                    "quoteMaxBorrowAmount": "999999999999999999",
+                    "baseMaxBuyAmount": "999999999999999999",
+                    "quoteMaxBuyAmount": "999999999999999999",
+                    "baseMaxHoldAmount": "999999999999999999",
+                    "quoteMaxHoldAmount": "999999999999999999",
+                    "basePrecision": 8,
+                    "quotePrecision": 8,
+                    "baseBorrowCoefficient": "1",
+                    "quoteBorrowCoefficient": "1",
+                    "baseMarginCoefficient": "1",
+                    "quoteMarginCoefficient": "1",
+                    "baseBorrowMinAmount": null,
+                    "baseBorrowMinUnit": null,
+                    "quoteBorrowMinAmount": "0.001",
+                    "quoteBorrowMinUnit": "0.001",
+                    "baseBorrowEnabled": false,
+                    "quoteBorrowEnabled": true
+                }
+            ]
+        }
+        """
+        params = {"isIsolated":isIsolated}
+        if currency:
+            params["currency"] = currency
+        if symbol:
+            params["symbol"] = symbol
+
+        return self._request('GET', '/api/v3/margin/currencies', params=params)
