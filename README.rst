@@ -35,7 +35,8 @@ update
  13. trade.cancel_all_hf_orders: `Cancel all HF orders <https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/cancel-all-hf-orders>`_.
  14. customized websocket: ./kucoin/example_customized_ws_private.py | kucoin/example_customized_ws_public.py
   - sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-
+ 15. set api TCP_NODELAY：After instantiating the client, you can cancel the Nagle algorithm through client.TCP_NODELAY=1 (default is 0)
+  - kucoin/example_client_TCP_NODELAY.py
 
 Quick Start
 -----------
