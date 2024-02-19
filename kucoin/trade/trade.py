@@ -1383,6 +1383,63 @@ class TradeData(KucoinBaseRestApi):
 
         return self._request('POST', '/api/v3/oco/order', params=params)
 
+
+    def get_hf_completed_orders(self, symbol, **kwargs):
+        """
+        Get HF Completed order list
+        https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/get-hf-completed-order-list
+        Param	Type	Mandatory	Description
+        :param symbol	String	Yes	Only returns order information for the specified trading pair
+        :param kwargs	 Reference api documentation
+        """
+        params = {
+            'symbol': symbol
+        }
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('GET', '/api/v1/hf/orders/done', params=params)
+
+    def get_hf_filled_list(self, symbol, **kwargs):
+        """
+        Get HF Filled List
+        https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/get-hf-filled-list
+        :param symbol: Only returns order information for the specified trading pair
+        :param kwargs:  Fill in parameters with reference documents
+        :return:
+        {
+          "items":[
+             {
+                "id":2678765568,
+                "symbol":"BTC-ETC",
+                "tradeId":616179312641,
+                "orderId":"6306cf6e27ecbe0001e1e03a",
+                "counterOrderId":"6306cf4027ecbe0001e1df4d",
+                "side":"buy",
+                "liquidity":"taker",
+                "forceTaker":false,
+                "price":"1",
+                "size":"1",
+                "funds":"1",
+                "fee":"0.00021",
+                "feeRate":"0.00021",
+                "feeCurrency":"USDT",
+                "stop":"",
+                "tradeType":"TRADE",
+                "type":"limit",
+                "createdAt":1661390702919
+             }
+          ],
+          "lastId":2678765568
+        }
+        """
+        params = {
+            'symbol': symbol
+        }
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('GET', '/api/v1/hf/fills', params=params)
     def cancel_oco_order(self, orderId):
         """
         Cancel Order by orderId

@@ -9,6 +9,20 @@ Welcome to python-kucoin-sdk
     :target: https://pypi.org/project/python-kucoin
 
 
+
+.. role:: red
+    :class: red
+
+.. raw:: html
+
+    <style>
+
+    .red {
+        color:IndianRed;
+    }
+
+    </style>
+
 Features
 --------
 
@@ -19,6 +33,12 @@ Features
 
 update
 ----------
+- 2024 02/19
+ 1. trade.get_hf_filled_list: same to trade.get_hf_transaction_records `Get HF Filled List <https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/get-hf-filled-list>`_
+  - :red:`The trade.get_hf_transaction_records method will be removed at some time in the future`
+ 2. trade.get_hf_completed_orders: same to trade.get_filled_hf_order `Get HF Completed order list <https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/get-hf-completed-order-list>`_
+  - :red:`The trade.get_filled_hf_order method will be removed at some time in the future`
+
 - 2024 02/07
  1. margin.get_etf_info: `Get Leveraged Token Info <https://www.kucoin.com/docs/rest/margin-trading/margin-info/get-leveraged-token-info>`_.
  2. margin.get_margin_account_Detail: `Get Account Detail - Cross Margin <https://www.kucoin.com/docs/rest/funding/funding-overview/get-account-detail-cross-margin>`_.
@@ -103,3 +123,4 @@ Websockets
 - ./kucoin/example_customized_ws_private.py
 - ./kucoin/example_customized_ws_public.py
 - ./kucoin/example_default_ws_public.py
+
