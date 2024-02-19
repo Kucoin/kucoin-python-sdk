@@ -16,11 +16,7 @@ Welcome to python-kucoin-sdk
 .. raw:: html
 
     <style>
-
-    .red {
-        color:IndianRed;
-    }
-
+    .red {color:IndianRed;}
     </style>
 
 Features
