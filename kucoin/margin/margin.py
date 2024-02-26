@@ -968,3 +968,25 @@ class MarginData(KucoinBaseRestApi):
             params["symbol"] = symbol
 
         return self._request('GET', '/api/v3/margin/currencies', params=params)
+
+    def get_interest_rates(self, currency):
+        """
+        Get Interest Rates
+        https://www.kucoin.com/docs/rest/margin-trading/lending-market-v3-/get-interest-rates
+
+        :param currency:  currency
+        :return:
+        [
+          {
+            "time": "202303261200",
+            "marketInterestRate": "0.003"
+          },
+          {
+            "time": "202303261300",
+            "marketInterestRate": "0.004"
+          }
+        ]
+        """
+        params = {"currency":currency}
+
+        return self._request('GET', '/api/v3/project/marketInterestRate', params=params)

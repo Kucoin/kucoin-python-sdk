@@ -29,6 +29,9 @@ Features
 
 update
 ----------
+- 2024 02/26
+1. add Api: margin.get_interest_rates:  `Get Interest Rates <https://www.kucoin.com/docs/rest/margin-trading/lending-market-v3-/get-interest-rates>`_.
+
 - 2024 02/19
  1. trade.get_hf_filled_list: same to trade.get_hf_transaction_records `Get HF Filled List <https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/get-hf-filled-list>`_
   - :red:`The trade.get_hf_transaction_records method will be removed at some time in the future`
