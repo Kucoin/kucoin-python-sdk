@@ -9,6 +9,29 @@
 -   Implement websockets (note only python3.6+)
 
 # update
+- 2024 04/14
+1. [NEW] POST /api/v3/accounts/universal-transfer:  User.flex_transfer
+2. [DEPRECATED] Margin.create_borrow_order，use Margin.margin_borrowing instead
+3. [DEPRECATED] Margin.get_borrow_order，use Margin.get_margin_borrowing_history instead
+4. [DEPRECATED] Margin.get_repayment_record
+5. [DEPRECATED] Margin.click_to_repayment，use Margin.repayment instead
+6. [DEPRECATED] Margin.repay_single_order，use Margin.repayment instead
+7. [DEPRECATED] Margin.create_lend_order
+8. [DEPRECATED] Margin.cancel_lend_order
+9. [DEPRECATED] Margin.set_auto_lend
+10. [DEPRECATED] Margin.get_active_order
+11. [DEPRECATED] Margin.get_lent_history
+12. [DEPRECATED] Margin.get_active_list
+13. [DEPRECATED] Margin.get_settled_order
+14. [DEPRECATED] Margin.get_lend_record
+15. [DEPRECATED] Margin.get_lending_market
+16. [DEPRECATED] Margin.get_margin_data
+17. [DEPRECATED] Margin.create_isolated_margin_borrow_order，use Margin.margin_borrowing instead
+18. [DEPRECATED] Margin.quick_repayment，use Margin.repayment instead
+19. [DEPRECATED] Margin.single_repayment，use Margin.repayment instead
+20. [DEPRECATED] Margin.query_repayment_records
+21. [DEPRECATED] Margin.query_outstanding_repayment_records，use Margin.query_single_isolated_margin_account_info instead
+22. [DEPRECATED] Margin.get_repay_record，use Margin.get_margin_account instead
 
 - 2024 02/26
 1. add Api: margin.get_interest_rates:[Get Interest Rates](https://www.kucoin.com/docs/rest/margin-trading/lending-market-v3-/get-interest-rates).

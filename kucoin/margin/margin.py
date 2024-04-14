@@ -1,4 +1,5 @@
 from kucoin.base_request.base_request import KucoinBaseRestApi
+import warnings
 
 
 class MarginData(KucoinBaseRestApi):
@@ -67,6 +68,7 @@ class MarginData(KucoinBaseRestApi):
             "currency": "USDT"
         }
         """
+        warnings.warn("this  function is deprecated, use margin_borrowing instead,We will be taking this API offline in the near future", DeprecationWarning)
         params = {
             'currency': currency,
             'type': order_type,
@@ -75,6 +77,29 @@ class MarginData(KucoinBaseRestApi):
         if kwargs:
             params.update(kwargs)
         return self._request('POST', '/api/v1/margin/borrow', params=params)
+
+    def margin_borrowing(self, currency, timeinforce, size, **kwargs):
+        """
+        Margin Trading(V3)
+        Margin Borrowing
+        https://www.kucoin.com/docs/rest/margin-trading/margin-trading-v3-/margin-borrowing
+        :param currency: Currency to Borrow (Mandatory)
+        :type: str
+        :param timeinforce:  IOC, FOK (Mandatory)
+        :type: str
+        :param size: Total size (Mandatory)
+        :type: float
+        :param kwargs: [Optional] isIsolated, symbol
+        :return: see api doc
+        """
+        params = {
+            'currency': currency,
+            'timeInForce': timeinforce,
+            'size': size,
+        }
+        if kwargs:
+            params.update(kwargs)
+        return self._request('POST', '/api/v3/margin/borrow', params=params)
 
     def get_borrow_order(self, orderId):
         """
@@ -100,11 +125,26 @@ class MarginData(KucoinBaseRestApi):
             "status": "DONE"
           }
         """
+        warnings.warn("this  function is deprecated, use get_margin_borrowing_history instead,We will be taking this API offline in the near future", DeprecationWarning)
         params = {
             'orderId': orderId
         }
 
         return self._request('GET', '/api/v1/margin/borrow', params=params)
+
+    def get_margin_borrowing_history(self, currency,**kwargs):
+        """
+        Get Margin Borrowing History
+        https://www.kucoin.com/docs/rest/margin-trading/margin-trading-v3-/get-margin-borrowing-history
+        :param currency: Currency
+        :param kwargs: [Optional] see Api Doc
+        """
+        params = {
+            'currency': currency
+        }
+        if kwargs:
+            params.update(kwargs)
+        return self._request('GET', '/api/v3/margin/borrow', params=params)
 
     def get_repay_record(self, **kwargs):
         """
@@ -135,6 +175,7 @@ class MarginData(KucoinBaseRestApi):
         params = {}
         if kwargs:
             params.update(kwargs)
+        warnings.warn("this  function is deprecated, use get_margin_account instead,We will be taking this API offline in the near future", DeprecationWarning)
         return self._request('GET', '/api/v1/margin/borrow/outstanding', params=params)
 
     def get_repayment_record(self, **kwargs):
@@ -161,6 +202,7 @@ class MarginData(KucoinBaseRestApi):
             "totalPage": 0
           }
         """
+        warnings.warn("this  function is deprecated,We will be taking this API offline in the near future", DeprecationWarning)
         params = {}
         if kwargs:
             params.update(kwargs)
@@ -179,12 +221,31 @@ class MarginData(KucoinBaseRestApi):
         :type: float
         :return:
         """
+        warnings.warn("this  function is deprecated, use repayment instead,We will be taking this API offline in the near future", DeprecationWarning)
         params = {
             'currency': currency,
             'sequence': sequence,
             'size': size
         }
         return self._request('POST', '/api/v1/margin/repay/all', params=params)
+
+
+    def repayment(self, currency, size,isIsolated=None,symbol=None):
+        """
+        Repayment
+        https://www.kucoin.com/docs/rest/margin-trading/margin-trading-v3-/repayment
+        :param see api doc
+        :return: see api doc
+        """
+        params = {
+            'currency': currency,
+            'size': size
+        }
+        if isIsolated:
+            params['isIsolated'] = isIsolated
+        if symbol:
+            params['symbol'] = symbol
+        return self._request('POST', '/api/v3/margin/repay', params=params)
 
     def repay_single_order(self, currency, tradeId, size):
         """
@@ -197,6 +258,7 @@ class MarginData(KucoinBaseRestApi):
         :type: float
         :return:
         """
+        warnings.warn("this  function is deprecated, use repayment instead,We will be taking this API offline in the near future", DeprecationWarning)
         params = {
             'currency': currency,
             'tradeId': tradeId,
@@ -220,6 +282,7 @@ class MarginData(KucoinBaseRestApi):
             "orderId": "5da5a4f0f943c040c2f8501e"
         }
         """
+        warnings.warn("this  function is deprecated,We will be taking this API offline in the near future", DeprecationWarning)
         params = {
             'currency': currency,
             'size': size,
@@ -235,6 +298,7 @@ class MarginData(KucoinBaseRestApi):
         :type: str
         :return:
         """
+        warnings.warn("this  function is deprecated,We will be taking this API offline in the near future", DeprecationWarning)
         return self._request('DELETE', '/api/v1/margin/lend/{orderId}'.format(orderId=orderId))
 
     def set_auto_lend(self, currency, isEnable, **kwargs):
@@ -253,6 +317,7 @@ class MarginData(KucoinBaseRestApi):
         }
         if kwargs:
             params.update(kwargs)
+        warnings.warn("this  function is deprecated,We will be taking this API offline in the near future", DeprecationWarning)
         return self._request('POST', '/api/v1/margin/toggle-auto-lend', params=params)
 
     def get_active_order(self, **kwargs):
@@ -279,6 +344,7 @@ class MarginData(KucoinBaseRestApi):
         params = {}
         if kwargs:
             params.update(kwargs)
+        warnings.warn("this  function is deprecated,We will be taking this API offline in the near future", DeprecationWarning)
         return self._request('GET', '/api/v1/margin/lend/active', params=params)
 
     def get_lent_history(self, **kwargs):
@@ -306,6 +372,7 @@ class MarginData(KucoinBaseRestApi):
         params = {}
         if kwargs:
             params.update(kwargs)
+        warnings.warn("this  function is deprecated,We will be taking this API offline in the near future", DeprecationWarning)
         return self._request('GET', '/api/v1/margin/lend/done', params=params)
 
     def get_active_list(self, **kwargs):
@@ -333,6 +400,7 @@ class MarginData(KucoinBaseRestApi):
         params = {}
         if kwargs:
             params.update(kwargs)
+        warnings.warn("this  function is deprecated,We will be taking this API offline in the near future", DeprecationWarning)
         return self._request('GET', '/api/v1/margin/lend/trade/unsettled', params=params)
 
     def get_settled_order(self, **kwargs):
@@ -361,6 +429,7 @@ class MarginData(KucoinBaseRestApi):
         params = {}
         if kwargs:
             params.update(kwargs)
+        warnings.warn("this  function is deprecated，We will be taking this API offline in the near future.", DeprecationWarning)
         return self._request('GET', '/api/v1/margin/lend/trade/settled', params=params)
 
     def get_lend_record(self, currency=None):
@@ -381,6 +450,7 @@ class MarginData(KucoinBaseRestApi):
         params = {}
         if currency:
             params['currency'] = currency
+        warnings.warn("this  function is deprecated，We will be taking this API offline in the near future.", DeprecationWarning)
         return self._request('GET', '/api/v1/margin/lend/assets', params=params)
 
     def get_lending_market(self, currency, term=None):
@@ -402,6 +472,7 @@ class MarginData(KucoinBaseRestApi):
         }
         if term:
             params['term'] = term
+        warnings.warn("this  function is deprecated，We will be taking this API offline in the near future.", DeprecationWarning)
         return self._request('GET', '/api/v1/margin/market', params=params)
 
     def get_margin_data(self, currency):
@@ -422,6 +493,7 @@ class MarginData(KucoinBaseRestApi):
         params = {
             'currency': currency
         }
+        warnings.warn("this  function is deprecated，We will be taking this API offline in the near future.", DeprecationWarning)
         return self._request('GET', '/api/v1/margin/trade/last', params=params)
 
     def get_margin_risk_limit(self, marginModel='cross'):
@@ -627,6 +699,7 @@ class MarginData(KucoinBaseRestApi):
         }
         if kwargs:
             params.update(kwargs)
+        warnings.warn("this function is deprecated, use margin_borrowing instead,We will be taking this API offline in the near future", DeprecationWarning)
         return self._request('POST', '/api/v1/isolated/borrow', params=params)
 
     def query_outstanding_repayment_records(self, **kwargs):
@@ -672,6 +745,7 @@ class MarginData(KucoinBaseRestApi):
         params = {}
         if kwargs:
             params.update(kwargs)
+        warnings.warn("this  function is deprecated, use query_single_isolated_margin_account_info instead,We will be taking this API offline in the near future", DeprecationWarning)
         return self._request('GET', '/api/v1/isolated/borrow/outstanding', params=params)
 
     def query_repayment_records(self, **kwargs):
@@ -715,6 +789,7 @@ class MarginData(KucoinBaseRestApi):
         params = {}
         if kwargs:
             params.update(kwargs)
+        warnings.warn("this  function is deprecated,We will be taking this API offline in the near future", DeprecationWarning)
         return self._request('GET', '/api/v1/isolated/borrow/repaid', params=params)
 
     def quick_repayment(self, symbol, currency, size, seq_strategy):
@@ -738,6 +813,7 @@ class MarginData(KucoinBaseRestApi):
             'size': size,
             'seqStrategy': seq_strategy
         }
+        warnings.warn("this  function is deprecated, use repayment instead,We will be taking this API offline in the near future", DeprecationWarning)
         return self._request('POST', '/api/v1/isolated/repay/all', params=params)
 
     def single_repayment(self, symbol, currency, size, loan_id):
@@ -759,6 +835,7 @@ class MarginData(KucoinBaseRestApi):
             'size': size,
             'loanId': loan_id
         }
+        warnings.warn("this  function is deprecated, use repayment instead,We will be taking this API offline in the near future", DeprecationWarning)
         return self._request('POST', '/api/v1/isolated/repay/single', params=params)
 
     def get_etf_info(self, currency=None):
@@ -990,3 +1067,9 @@ class MarginData(KucoinBaseRestApi):
         params = {"currency":currency}
 
         return self._request('GET', '/api/v3/project/marketInterestRate', params=params)
+
+    def get_orders_multi(self, orderIds):
+
+        params = {"orderIds":orderIds}
+
+        return self._request('GET', '/api/v1/orders/multi', params=params)

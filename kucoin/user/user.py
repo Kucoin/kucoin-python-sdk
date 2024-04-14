@@ -427,6 +427,32 @@ class UserData(KucoinBaseRestApi):
             params['chain'] = chain
         return self._request('POST', '/api/v1/deposit-addresses', params=params)
 
+    def flex_transfer(self, clientOid,amount,fromAccountType,type,toAccountType,
+                          currency=None,fromUserId=None,fromAccountTag=None,toUserId=None,toAccountTag=None):
+        """
+        FlexTransfer
+        https://www.kucoin.com/docs/rest/funding/transfer/flextransfer
+        """
+        params = {
+                "clientOid": clientOid,
+                "type": type,
+                "amount": amount,
+                "fromAccountType": fromAccountType,
+                "toAccountType": toAccountType
+            }
+
+        if currency:
+            params['currency'] = currency
+        if currency:
+            params['fromUserId'] = fromUserId
+        if currency:
+            params['fromAccountTag'] = fromAccountTag
+        if currency:
+            params['toUserId'] = toUserId
+        if currency:
+            params['toAccountTag'] = toAccountTag
+        return self._request('POST', '/api/v3/accounts/universal-transfer', params=params)
+
     def get_deposit_addressv2(self, currency, chain=None):
         """
         https://docs.kucoin.com/#get-deposit-addresses-v2
