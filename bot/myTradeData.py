@@ -11,7 +11,25 @@ class MyTradeData(Trade):
         #     params.update(kwargs)
 
         return self._request('POST', '/api/v1/orders/multi', params=params)
+    def createOrder(self, order, **kwargs):
+        """
+        Place Orders
+        """
+        ret = self.create_bulk_order([order])
+        return ret[0]
+        #return self._request('POST', '/api/v1/orders/', params=params)
     
+    
+    def getRecentDoneOrders(self, symbol, **kwargs):
+        """
+        Get order by oid
+        """
+        
+        # if kwargs:
+        #     params.update(kwargs)
+
+        return self._request('GET', '/api/v1/recentDoneOrders?symbol='+symbol)
+ 
     def getOrderByOId(self, oid, **kwargs):
         """
         Get order by oid

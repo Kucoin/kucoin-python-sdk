@@ -53,7 +53,7 @@ bots.append({
   "step" : 0.2,
   "end" : 35,
   "entryValue" : 0,
-  "size" : 40,
+  "size" : 20,
   "grids" : 80,
   "leverage" : "10",
   "tickerRound" : 4,
@@ -146,82 +146,87 @@ def cancelOrdersBySide(side, items):
 
 def adjustStopOrders():
   global prevROEPcnt
-  a= myTrade.get_position_details(symbol)
-  b= myTrade.getOpenStopOrderBySymbol(symbol)
-  if a['id'] != '':
-    if prevROEPcnt != 0: 
-      if abs((a['unrealisedRoePcnt']-prevROEPcnt))*100 > 1:
-        # send message if PNL changed more than 1%
-        message = f'Position symbol [{a["symbol"]}]: size:{a["currentQty"]}, PL: {round(a["realisedPnl"]+a["unrealisedPnl"],4) }, ROE: { round(a["unrealisedRoePcnt"]*100,2)}%'
-        print(message)
-        sendTelegramMessage(message)
-    prevROEPcnt = a['unrealisedRoePcnt']
-    if len(b['items']) == 0:
-      stopOrder =   {
-              "clientOid": "stop"+str(uuid.uuid4()),
-              "side": "buy" if a['currentQty'] < 0 else "sell",
-              "symbol": a['symbol'],
-              "type":"limit",
-              "size": str(a['currentQty'] * -1) if a['currentQty'] < 0 else str(a['currentQty']),
-              "leverage": str(a['realLeverage']),
-              "stop": "down",
-              "price": round(a['avgEntryPrice'] - step,tickerRound),
-              "stopPrice": round(a['avgEntryPrice'] - step,tickerRound),
-              "stopPriceType": "TP",
-              "reduceOnly": True
-            }
-      try:
-        c = myTrade.create_bulk_order([stopOrder])  
-        message = f'Adjusted TP - size:{stopOrder["size"]} - price:{stopOrder["price"]}'
-        print(message)
-        sendTelegramMessage(message)
-        #TODO: Check if succesfull
-      except Exception as e:
-        error = 'Error setting TP::  '+str(e)
-        print(error)
-        sendTelegramMessage(error)
+  try:
+    a= myTrade.get_position_details(symbol)
+    b= myTrade.getOpenStopOrderBySymbol(symbol)
+    if a['id'] != '':
+      if prevROEPcnt != 0: 
+        if abs((a['unrealisedRoePcnt']-prevROEPcnt))*100 > 1:
+          # send message if PNL changed more than 1%
+          message = f'Position symbol [{a["symbol"]}]: size:{a["currentQty"]}, PL: {round(a["realisedPnl"]+a["unrealisedPnl"],4) }, ROE: { round(a["unrealisedRoePcnt"]*100,2)}%'
+          print(message)
+          sendTelegramMessage(message)
+      prevROEPcnt = a['unrealisedRoePcnt']
+      if len(b['items']) == 0:
+        stopOrder =   {
+                "clientOid": "stop"+str(uuid.uuid4()),
+                "side": "buy" if a['currentQty'] < 0 else "sell",
+                "symbol": a['symbol'],
+                "type":"limit",
+                "size": str(a['currentQty'] * -1) if a['currentQty'] < 0 else str(a['currentQty']),
+                "leverage": str(a['realLeverage']),
+                "stop": "down",
+                "price": round(a['avgEntryPrice'] - step,tickerRound),
+                "stopPrice": round(a['avgEntryPrice'] - step,tickerRound),
+                "stopPriceType": "TP",
+                "reduceOnly": True
+              }
+        try:
+          c = myTrade.create_bulk_order([stopOrder])  
+          message = f'Adjusted TP - size:{stopOrder["size"]} - price:{stopOrder["price"]}'
+          print(message)
+          sendTelegramMessage(message)
+          #TODO: Check if succesfull
+        except Exception as e:
+          error = 'Error setting TP::  '+str(e)
+          print(error)
+          sendTelegramMessage(error)
 
+      else:
+        for order in b['items']:
+          if order['side'] == "buy":
+            tickerDec = getTickerDec(order['symbol'])
+            if (float(order['stopPrice']) > round(a['avgEntryPrice'],tickerDec) or \
+                float(order['stopPrice']) < round(a['avgEntryPrice']-step ,tickerDec) or \
+                (order['size']) < ((a['currentQty']) * -1) if a['currentQty'] < 0 else (a['currentQty']) ):
+              stopOrder =   {
+                      "clientOid":order["clientOid"],
+                      "side": order['side'],
+                      "symbol": order['symbol'],
+                      "type":"limit",
+                      "size": str(a['currentQty'] * -1) if a['currentQty'] < 0 else str(a['currentQty']),
+                      "leverage": order['leverage'],
+                      "stop": "down",
+                      "price": round((a['avgEntryPrice'] - step),tickerRound),
+                      "stopPrice": round((a['avgEntryPrice'] - step),tickerRound),
+                      "stopPriceType": "TP",
+                      "reduceOnly": True
+                    }
+              try:
+                cancelOrdersBySide("buy",b['items'])
+                c = myTrade.create_bulk_order([stopOrder])
+                # Remove STOP prefix for original order
+                changeOrderStatus(order["clientOid"][:4],1)
+                message = f'Adjusted TP - size:{stopOrder["size"]} - price:{stopOrder["price"]}'
+                print(message)
+                sendTelegramMessage(message)
+                #TODO: Check error return
+                #print(c)
+                break
+              except Exception as e:
+                error = 'Error adjusting TP::  '+str(e)
+                print(error)
+                sendTelegramMessage(error)
     else:
-      for order in b['items']:
-        if order['side'] == "buy":
-          tickerDec = getTickerDec(order['symbol'])
-          if (float(order['stopPrice']) > round(a['avgEntryPrice'],tickerDec) or \
-              float(order['stopPrice']) < round(a['avgEntryPrice']-step ,tickerDec) or \
-              (order['size']) < ((a['currentQty']) * -1) if a['currentQty'] < 0 else (a['currentQty']) ):
-            stopOrder =   {
-                    "clientOid":order["clientOid"],
-                    "side": order['side'],
-                    "symbol": order['symbol'],
-                    "type":"limit",
-                    "size": str(a['currentQty'] * -1) if a['currentQty'] < 0 else str(a['currentQty']),
-                    "leverage": order['leverage'],
-                    "stop": "down",
-                    "price": round((a['avgEntryPrice'] - step),tickerRound),
-                    "stopPrice": round((a['avgEntryPrice'] - step),tickerRound),
-                    "stopPriceType": "TP",
-                    "reduceOnly": True
-                  }
-            try:
-              cancelOrdersBySide("buy",b['items'])
-              c = myTrade.create_bulk_order([stopOrder])
-              # Remove STOP prefix for original order
-              changeOrderStatus(order["clientOid"][:4],1)
-              message = f'Adjusted TP - size:{stopOrder["size"]} - price:{stopOrder["price"]}'
-              print(message)
-              sendTelegramMessage(message)
-              #TODO: Check error return
-              #print(c)
-              break
-            except Exception as e:
-              error = 'Error adjusting TP::  '+str(e)
-              print(error)
-              sendTelegramMessage(error)
-  else:
-    if prevROEPcnt != 0: 
-      message = f'Position symbol [{symbol}] closed, last known ROE: { round(prevROEPcnt*100,2)}%'
-      print(message)
-      sendTelegramMessage(message)
-      prevROEPcnt = 0
+      if prevROEPcnt != 0: 
+        message = f'Position symbol [{symbol}] closed, last known ROE: { round(prevROEPcnt*100,2)}%'
+        print(message)
+        sendTelegramMessage(message)
+        prevROEPcnt = 0
+  except Exception as e:
+    error = 'Error getting positions for TP adjustment::  '+str(e)
+    print(error)
+    sendTelegramMessage(error)
 
 async def main():
   startTime = current_milli_time()
