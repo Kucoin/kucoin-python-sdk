@@ -9,3 +9,9 @@ dist/**
 .DS_Store
 bot/secrets_API_KEYS.py
 kucoin_python.egg-info/**
+bot/firebaseconfig.json
+bot/firebaseServiceAccountKucoinBot.json
+bot/bot2/firebaseServiceAccountKucoinBot.json
+bot/bot2/secrets_API_KEYS.py
+bot/bot2/firebaseconfig.json
+bot/bot2/firebaseServiceAccountKucoinBot.json
