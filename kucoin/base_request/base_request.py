@@ -21,7 +21,7 @@ except (ModuleNotFoundError, pkg_resources.DistributionNotFound):
 
 class KucoinBaseRestApi(object):
 
-    def __init__(self, key='', secret='', passphrase='', is_sandbox=False, url='', is_v1api=False):
+    def __init__(self, key='', secret='', passphrase='',  url='', is_v1api=False):
         """
         https://docs.kucoin.com
 
@@ -31,16 +31,12 @@ class KucoinBaseRestApi(object):
         :type secret: string
         :param passphrase: Api Passphrase used to create API  (Mandatory)
         :type passphrase: string
-        :param is_sandbox: True sandbox , False  (optional)
         """
 
         if url:
             self.url = url
         else:
-            if is_sandbox:
-                self.url = 'https://openapi-sandbox.kucoin.com'
-            else:
-                self.url = 'https://api.kucoin.com'
+            self.url = 'https://api.kucoin.com'
 
         self.key = key
         self.secret = secret

@@ -230,7 +230,7 @@ class MarginData(KucoinBaseRestApi):
         return self._request('POST', '/api/v1/margin/repay/all', params=params)
 
 
-    def repayment(self, currency, size,isIsolated=None,symbol=None):
+    def repayment(self, currency, size,isIsolated=None,symbol=None,isHf=None):
         """
         Repayment
         https://www.kucoin.com/docs/rest/margin-trading/margin-trading-v3-/repayment
@@ -243,9 +243,69 @@ class MarginData(KucoinBaseRestApi):
         }
         if isIsolated:
             params['isIsolated'] = isIsolated
+        if isHf:
+            params['isHf'] = isHf
         if symbol:
             params['symbol'] = symbol
         return self._request('POST', '/api/v3/margin/repay', params=params)
+
+    def get_repayment_history(self, currency, **kwargs):
+        """
+        Get Repayment History
+        https://www.kucoin.com/docs/rest/margin-trading/margin-trading-v3-/get-repayment-history
+        """
+        params = {
+            'currency': currency,
+        }
+
+        if kwargs:
+            params.update(kwargs)
+        return self._request('GET', '/api/v3/margin/repay', params=params)
+
+    def get_cross_or_isolated_margin_interest_records(self, **kwargs):
+        """
+        Get Cross/Isolated Margin Interest Records
+        https://www.kucoin.com/docs/rest/margin-trading/margin-trading-v3-/get-cross-isolated-margin-interest-records
+        """
+        params = {}
+        if kwargs:
+            params.update(kwargs)
+        return self._request('GET', '/api/v3/margin/interest', params=params)
+
+    def place_hf_order(self, symbol, side, clientOid='', **kwargs):
+        """
+        Margin HF Trade
+        Place HF order
+        see: https://www.kucoin.com/docs/rest/margin-trading/margin-hf-trade/place-hf-order
+        """
+        params = {
+            'symbol': symbol,
+            'side': side,
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+        return self._request('POST', '/api/v3/hf/margin/order', params=params)
+
+
+    def place_hf_order_test(self, symbol, side, clientOid='', **kwargs):
+        """
+        Margin HF Trade
+        Place HF Order Test
+        see: https://www.kucoin.com/docs/rest/margin-trading/margin-hf-trade/place-hf-order-test
+        """
+        params = {
+            'symbol': symbol,
+            'side': side,
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+        return self._request('POST', '/api/v3/hf/margin/order/test', params=params)
 
     def repay_single_order(self, currency, tradeId, size):
         """
@@ -1068,8 +1128,3 @@ class MarginData(KucoinBaseRestApi):
 
         return self._request('GET', '/api/v3/project/marketInterestRate', params=params)
 
-    def get_orders_multi(self, orderIds):
-
-        params = {"orderIds":orderIds}
-
-        return self._request('GET', '/api/v1/orders/multi', params=params)

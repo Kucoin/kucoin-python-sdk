@@ -62,10 +62,8 @@ Quick Start
 
 Register an account with `KuCoin <https://www.kucoin.com/ucenter/signup>`_.
 
-To test on the Sandbox  with `KuCoin Sandbox <https://sandbox.kucoin.com/>`_.
 
-`Generate an API Key <https://www.kucoin.com/account/api>`_
-or `Generate an API Key in Sandbox <https://sandbox.kucoin.com/account/api>`_ and enable it.
+`Generate an API Key <https://www.kucoin.com/account/api>`_ and enable it.
 
 .. code:: bash
 
@@ -78,9 +76,7 @@ or `Generate an API Key in Sandbox <https://sandbox.kucoin.com/account/api>`_ an
     client = Market(url='https://api.kucoin.com')
     # client = Market()
 
-    # or connect to Sandbox
-    # client = Market(url='https://openapi-sandbox.kucoin.com')
-    # client = Market(is_sandbox=True)
+
 
     # get symbol kline
     klines = client.get_kline('BTC-USDT','1min')
@@ -94,10 +90,9 @@ or `Generate an API Key in Sandbox <https://sandbox.kucoin.com/account/api>`_ an
 
     # Trade
     from kucoin.client import Trade
-    client = Trade(key='', secret='', passphrase='', is_sandbox=False, url='')
+    client = Trade(key='', secret='', passphrase='', url='')
 
-    # or connect to Sandbox
-    # client = Trade(api_key, api_secret, api_passphrase, is_sandbox=True)
+
 
     # place a limit buy order
     order_id = client.create_limit_order('BTC-USDT', 'buy', '1', '8000')
@@ -112,8 +107,7 @@ or `Generate an API Key in Sandbox <https://sandbox.kucoin.com/account/api>`_ an
     from kucoin.client import User
     client = User(api_key, api_secret, api_passphrase)
 
-    # or connect to Sandbox
-    # client = User(api_key, api_secret, api_passphrase, is_sandbox=True)
+
 
     address = client.get_withdrawal_quota('KCS')
 

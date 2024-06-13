@@ -1,3 +1,4 @@
+from kucoin.lending.lending import LendingData
 from kucoin.margin.margin import MarginData
 from kucoin.market.market import MarketData
 from kucoin.trade.trade import TradeData
@@ -17,11 +18,13 @@ class Market(MarketData):
     pass
 
 
+class Lending(LendingData):
+    pass
+
+
 class Margin(MarginData):
     pass
 
 
 class WsToken(GetToken):
     pass
-
-

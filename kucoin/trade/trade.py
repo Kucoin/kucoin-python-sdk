@@ -5,7 +5,8 @@ class TradeData(KucoinBaseRestApi):
 
     def create_limit_margin_order(self, symbol, side, size, price, clientOid='', **kwargs):
         """
-        https://docs.kucoin.com/#place-a-margin-order
+        Place Margin Order
+        see： https://www.kucoin.com/docs/rest/margin-trading/orders/place-margin-order
         :param symbol: a valid trading symbol code (Mandatory)
         :type: str
         :param side: place direction buy or sell (Mandatory)
@@ -40,7 +41,8 @@ class TradeData(KucoinBaseRestApi):
 
     def create_market_margin_order(self, symbol, side, clientOid='', **kwargs):
         """
-        https://docs.kucoin.com/#place-a-margin-order
+        Place Margin Order
+        see： https://www.kucoin.com/docs/rest/margin-trading/orders/place-margin-order
         :param symbol: a valid trading symbol code (Mandatory)
         :type: str
         :param side: place direction buy or sell (Mandatory)
@@ -67,9 +69,41 @@ class TradeData(KucoinBaseRestApi):
 
         return self._request('POST', '/api/v1/margin/order', params=params)
 
+    def place_margin_order_test(self, symbol, side, type,clientOid='', **kwargs):
+        """
+        Place Margin Order Test
+        https://www.kucoin.com/docs/rest/margin-trading/orders/place-margin-order-test
+        :param symbol: a valid trading symbol code (Mandatory)
+        :type: str
+        :param side: place direction buy or sell (Mandatory)
+        :type: str
+        :param clientOid: Unique order id created by users to identify their orders, e.g. UUID. (Mandatory)
+        :type: str
+        :param kwargs:  Fill in parameters with reference documents
+        :return: {
+                  "orderId": "5bd6e9286d99522a52e458de",
+                  "borrowSize":10.2,
+                  "loanApplyId":"600656d9a33ac90009de4f6f"
+                }
+        """
+        params = {
+            'symbol': symbol,
+            'side': side,
+            'type': type
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/margin/order/test', params=params)
+
+
     def create_limit_order(self, symbol, side, size, price, clientOid='', **kwargs):
         """
-        https://docs.kucoin.com/#place-a-new-order
+        Place Order
+        https://www.kucoin.com/docs/rest/spot-trading/orders/place-order
         :param symbol: a valid trading symbol code (Mandatory)
         :type: str
         :param side: place direction buy or sell (Mandatory)
@@ -138,9 +172,10 @@ class TradeData(KucoinBaseRestApi):
 
         return self._request('POST', '/api/v1/stop-order', params=params)
 
-    def create_market_order(self, symbol, side, clientOid='', **kwargs):
+    def create_market_order(self, symbol, side, clientOid='', size=None,funds=None,**kwargs):
         """
-        https://docs.kucoin.com/#place-a-new-order
+        Place Order
+        https://www.kucoin.com/docs/rest/spot-trading/orders/place-order
         :param symbol: a valid trading symbol code (Mandatory)
         :type: str
         :param side: place direction buy or sell (Mandatory)
@@ -155,6 +190,10 @@ class TradeData(KucoinBaseRestApi):
             'side': side,
             'type': "market"
         }
+        if size:
+            params['size']=size
+        elif funds:
+            params['funds']=funds
         if not clientOid:
             clientOid = self.return_unique_id
         params['clientOid'] = clientOid
@@ -162,6 +201,26 @@ class TradeData(KucoinBaseRestApi):
             params.update(kwargs)
 
         return self._request('POST', '/api/v1/orders', params=params)
+
+
+    def place_order_test(self, symbol, side,type, clientOid='', **kwargs):
+        """
+        Place Order Test
+        https://www.kucoin.com/docs/rest/spot-trading/orders/place-order-test
+        """
+        params = {
+            'symbol': symbol,
+            'side': side,
+            'type': type
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+
+        return self._request('POST', '/api/v1/orders/test', params=params)
+
 
     def create_bulk_orders(self, symbol, orderList):
         """
@@ -735,7 +794,7 @@ class TradeData(KucoinBaseRestApi):
 
     def create_limit_hf_order(self, symbol, side, size, price, clientOid='', **kwargs):
         """
-        https://docs.kucoin.com/spot-hf/#place-hf-order
+        https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/place-hf-order
         :param symbol: a valid trading symbol code (Mandatory)
         :type: str
         :param side: place direction buy or sell (Mandatory)
@@ -766,7 +825,7 @@ class TradeData(KucoinBaseRestApi):
 
     def create_hf_market_order(self, symbol, side, clientOid='', **kwargs):
         """
-        https://docs.kucoin.com/spot-hf/#place-hf-order
+        https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/place-hf-order
         :param symbol: a valid trading symbol code (Mandatory)
         :type: str
         :param side: place direction buy or sell (Mandatory)
@@ -788,6 +847,26 @@ class TradeData(KucoinBaseRestApi):
             params.update(kwargs)
 
         return self._request('POST', '/api/v1/hf/orders', params=params)
+
+    def place_hf_order_test(self, symbol, side, size, price,type, clientOid='', **kwargs):
+        """
+        Place HF order Test
+        see: https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/place-hf-order-test
+        """
+        params = {
+            'symbol': symbol,
+            'size': size,
+            'side': side,
+            'price': price,
+            'type': type
+        }
+        if not clientOid:
+            clientOid = self.return_unique_id
+        params['clientOid'] = clientOid
+        if kwargs:
+            params.update(kwargs)
+        return self._request('POST', '/api/v1/hf/orders/test', params=params)
+
 
     def sync_create_limit_hf_order(self, symbol, side, size, price, clientOid='', **kwargs):
         """
