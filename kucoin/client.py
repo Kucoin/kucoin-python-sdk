@@ -1,3 +1,4 @@
+from kucoin.earn.earn import EarnData
 from kucoin.lending.lending import LendingData
 from kucoin.margin.margin import MarginData
 from kucoin.market.market import MarketData
@@ -19,6 +20,9 @@ class Market(MarketData):
 
 
 class Lending(LendingData):
+    pass
+
+class Earn(EarnData):
     pass
 
 

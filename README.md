@@ -9,6 +9,19 @@
 -   Implement websockets (note only python3.6+)
 
 # update
+
+- 2024 07/07
+1. [NEW] POST /api/v1/earn/orders: Earn.subscribe_to_earn_fixed_income_products
+2. [NEW] DELETE /api/v1/earn/orders: Earn.redeem_by_earn_holding_id
+3. [NEW] GET /api/v1/earn/redeem-preview: Earn.get_earn_redeem_preview_by_holding_id 
+4. [NEW] GET /api/v1/earn/saving/products: Earn.get_earn_savings_products 
+5. [NEW] GET /api/v1/earn/hold-assets: Earn.get_earn_fixed_income_current_holdings
+6. [NEW] GET /api/v1/earn/promotion/products: Earn.get_earn_limited_time_promotion_products 
+7. [NEW] GET /api/v1/earn/kcs-staking/products: Earn.get_earn_kcs_staking_products 
+8. [NEW] GET /api/v1/earn/staking/products: Earn.get_earn_staking_products
+9. [NEW] GET /api/v1/earn/eth-staking/products: Earn.get_earn_eth_staking_products 
+
+
 - 2024 04/14
 1. [NEW] POST /api/v3/accounts/universal-transfer:  User.flex_transfer
 2. [DEPRECATED] Margin.create_borrow_order，use Margin.margin_borrowing instead

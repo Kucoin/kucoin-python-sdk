@@ -29,6 +29,18 @@ Features
 
 update
 ----------
+
+- 2024 07/07
+1. [NEW] POST /api/v1/earn/orders: Earn.subscribe_to_earn_fixed_income_products
+2. [NEW] DELETE /api/v1/earn/orders: Earn.redeem_by_earn_holding_id
+3. [NEW] GET /api/v1/earn/redeem-preview: Earn.get_earn_redeem_preview_by_holding_id
+4. [NEW] GET /api/v1/earn/saving/products: Earn.get_earn_savings_products
+5. [NEW] GET /api/v1/earn/hold-assets: Earn.get_earn_fixed_income_current_holdings
+6. [NEW] GET /api/v1/earn/promotion/products: Earn.get_earn_limited_time_promotion_products
+7. [NEW] GET /api/v1/earn/kcs-staking/products: Earn.get_earn_kcs_staking_products
+8. [NEW] GET /api/v1/earn/staking/products: Earn.get_earn_staking_products
+9. [NEW] GET /api/v1/earn/eth-staking/products: Earn.get_earn_eth_staking_products
+
 - 2024 02/26
 1. add Api: margin.get_interest_rates:  `Get Interest Rates <https://www.kucoin.com/docs/rest/margin-trading/lending-market-v3-/get-interest-rates>`_.
 
@@ -37,6 +49,7 @@ update
   - :red:`The trade.get_hf_transaction_records method will be removed at some time in the future`
  2. trade.get_hf_completed_orders: same to trade.get_filled_hf_order `Get HF Completed order list <https://www.kucoin.com/docs/rest/spot-trading/spot-hf-trade-pro-account/get-hf-completed-order-list>`_
   - :red:`The trade.get_filled_hf_order method will be removed at some time in the future`
+
 
 - 2024 02/07
  1. margin.get_etf_info: `Get Leveraged Token Info <https://www.kucoin.com/docs/rest/margin-trading/margin-info/get-leveraged-token-info>`_.
