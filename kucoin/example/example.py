@@ -1,8 +1,7 @@
 # User
 from kucoin.client import User
 
-client = User(key='', secret='', passphrase='',
-              url='https://openapi-v2.kucoin.com')
+client = User(key='', secret='', passphrase='')
 
 user_page = client.get_sub_user_page()
 print(user_page)
@@ -41,8 +40,7 @@ print(hf_account)
 #  MarketData
 from kucoin.client import Market
 
-client = Market(key='', secret='', passphrase='',
-                url='https://openapi-v2.kucoin.com')
+client = Market(key='', secret='', passphrase='')
 
 # get symbol kline
 symbol_list = client.get_symbol_list_v2()
@@ -51,8 +49,7 @@ print(symbol_list)
 # MarginData
 from kucoin.client import Margin
 
-client = Margin(key='', secret='', passphrase='',
-                url='https://openapi-v2.kucoin.com')
+client = Margin(key='', secret='', passphrase='')
 
 isolated_margin_trading_pair = client.query_isolated_margin_trading_pair()
 print(isolated_margin_trading_pair)
@@ -84,8 +81,7 @@ print(single_repayment_res)
 #  MarginData
 from kucoin.client import Trade
 
-client = Trade(key='', secret='', passphrase='',
-               url='https://openapi-v2.kucoin.com')
+client = Trade(key='', secret='', passphrase='')
 
 create_limit_hf_order_res = client.create_limit_hf_order(symbol='BTC-USDT', side='buy', size='1.0', price='111')
 print(create_limit_hf_order_res)

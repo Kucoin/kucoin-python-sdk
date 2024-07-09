@@ -126,7 +126,6 @@ Register an account with `KuCoin <https://www.kucoin.com/ucenter/signup>`_.
 
 Websockets
 ----------
-- ./kucoin/example_customized_ws_private.py
-- ./kucoin/example_customized_ws_public.py
-- ./kucoin/example_default_ws_public.py
+- ./kucoin/example/example_customized_ws_private.py
+- ./kucoin/example/example_default_ws_public.py
 

@@ -15,16 +15,12 @@ async def main():
 
     # is public
     client = WsToken()
-    # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-    # address = ('openapi-v2.kucoin.com',443)
-    # sock.connect(address)
 
     ws_client = await KucoinWsClient.create(None, client, deal_msg, private=False)
 
-    await ws_client.subscribe('/spotMarket/level2Depth5:BTC-USDT,KCS-USDT')
+    await ws_client.subscribe('/spotMarket/level2Depth5:BTC-USDT')
     while True:
-        await asyncio.sleep(60, loop=loop)
+        await asyncio.sleep(10)
 
 
 if __name__ == "__main__":
