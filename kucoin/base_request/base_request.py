@@ -11,9 +11,11 @@ from uuid import uuid1
 from urllib.parse import urljoin
 import socket
 
+from requests import Session
 
 try:
     import pkg_resources
+
     version = 'v' + pkg_resources.get_distribution("kucoin-python").version
 except (ModuleNotFoundError, pkg_resources.DistributionNotFound):
     version = 'v1.0.0'
@@ -21,7 +23,8 @@ except (ModuleNotFoundError, pkg_resources.DistributionNotFound):
 
 class KucoinBaseRestApi(object):
 
-    def __init__(self, key='', secret='', passphrase='',  url='', is_v1api=False):
+
+    def __init__(self, key='', secret='', passphrase='', url='', is_v1api=False):
         """
         https://docs.kucoin.com
 
@@ -43,7 +46,14 @@ class KucoinBaseRestApi(object):
         self.passphrase = passphrase
         self.is_v1api = is_v1api
         self.TCP_NODELAY = 0
+        self._session = None
 
+    @property
+    def session(self) -> Session:
+        return self._session
+    @session.setter
+    def session(self, session: Session):
+        self._session = session
 
     def _request(self, method, uri, timeout=5, auth=True, params=None):
         uri_path = uri
@@ -87,21 +97,21 @@ class KucoinBaseRestApi(object):
                     "Content-Type": "application/json",
                     "KC-API-KEY-VERSION": "2"
                 }
-        headers["User-Agent"] = "kucoin-python-sdk/"+version
+        headers["User-Agent"] = "kucoin-python-sdk/" + version
         url = urljoin(self.url, uri)
-        superReq = requests
-        if self.TCP_NODELAY == 1:
-            superReq = requests.Session()
-            adapter = requests.adapters.HTTPAdapter()
-            adapter.socket_options = [
-                (socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-            ]
-            superReq.mount('https://', adapter)
+        if not self.session:
+            self.session = requests.Session()
+            if self.TCP_NODELAY == 1:
+                adapter = requests.adapters.HTTPAdapter()
+                adapter.socket_options = [
+                    (socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+                ]
+                self.session.mount('https://', adapter)
         if method in ['GET', 'DELETE']:
-            response_data = superReq.request(method, url, headers=headers, timeout=timeout)
+            response_data = self.session.request(method, url, headers=headers, timeout=timeout)
         else:
-            response_data = superReq.request(method, url, headers=headers, data=data_json,
-                                             timeout=timeout)
+            response_data = self.session.request(method, url, headers=headers, data=data_json,
+                                                 timeout=timeout)
         return self.check_response_data(response_data)
 
     @staticmethod
