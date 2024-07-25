@@ -78,7 +78,7 @@ class MarginData(KucoinBaseRestApi):
             params.update(kwargs)
         return self._request('POST', '/api/v1/margin/borrow', params=params)
 
-    def margin_borrowing(self, currency, timeinforce, size, **kwargs):
+    def margin_borrowing(self, currency, timeinforce, size, isHf=False, **kwargs):
         """
         Margin Trading(V3)
         Margin Borrowing
@@ -96,6 +96,7 @@ class MarginData(KucoinBaseRestApi):
             'currency': currency,
             'timeInForce': timeinforce,
             'size': size,
+            'isHf': isHf
         }
         if kwargs:
             params.update(kwargs)
@@ -132,7 +133,7 @@ class MarginData(KucoinBaseRestApi):
 
         return self._request('GET', '/api/v1/margin/borrow', params=params)
 
-    def get_margin_borrowing_history(self, currency,**kwargs):
+    def get_margin_borrowing_history(self, currency, **kwargs):
         """
         Get Margin Borrowing History
         https://www.kucoin.com/docs/rest/margin-trading/margin-trading-v3-/get-margin-borrowing-history
@@ -229,8 +230,7 @@ class MarginData(KucoinBaseRestApi):
         }
         return self._request('POST', '/api/v1/margin/repay/all', params=params)
 
-
-    def repayment(self, currency, size,isIsolated=None,symbol=None,isHf=None):
+    def repayment(self, currency, size, isIsolated=None, symbol=None, isHf=False):
         """
         Repayment
         https://www.kucoin.com/docs/rest/margin-trading/margin-trading-v3-/repayment
@@ -288,7 +288,6 @@ class MarginData(KucoinBaseRestApi):
         if kwargs:
             params.update(kwargs)
         return self._request('POST', '/api/v3/hf/margin/order', params=params)
-
 
     def place_hf_order_test(self, symbol, side, clientOid='', **kwargs):
         """
@@ -1098,7 +1097,7 @@ class MarginData(KucoinBaseRestApi):
             ]
         }
         """
-        params = {"isIsolated":isIsolated}
+        params = {"isIsolated": isIsolated}
         if currency:
             params["currency"] = currency
         if symbol:
@@ -1124,7 +1123,138 @@ class MarginData(KucoinBaseRestApi):
           }
         ]
         """
-        params = {"currency":currency}
+        params = {"currency": currency}
 
         return self._request('GET', '/api/v3/project/marketInterestRate', params=params)
 
+    def get_active_hf_order_symbols(self, tradeType):
+        """
+        Get Active HF Order Symbols
+        https://www.kucoin.com/docs/rest/margin-trading/margin-hf-trade/get-active-hf-order-symbols
+        """
+        params = {"tradeType": tradeType}
+        return self._request('GET', '/api/v3/hf/margin/order/active/symbols', params=params)
+
+    def get_cross_margin_trading_pairs_configuration(self, symbol=None):
+        """
+        Get Cross Margin Trading Pairs Configuration
+        https://www.kucoin.com/docs/rest/margin-trading/margin-trading-v3-/get-cross-margin-trading-pairs-configuration
+        """
+        params = {}
+        if symbol:
+            params = {"symbol": symbol}
+        return self._request('GET', '/api/v3/margin/symbols', params=params)
+
+
+    def modify_leverage_multiplier(self,  leverage, isIsolated=False,symbol=None):
+        """
+        Modify Leverage Multiplier
+        https://www.kucoin.com/docs/rest/margin-trading/margin-trading-v3-/modify-leverage-multiplier
+        """
+        params = {
+            'leverage': leverage,
+            'isIsolated': isIsolated,
+        }
+        if symbol:
+            params['symbol']=symbol
+        return self._request('POST', '/api/v3/position/update-user-leverage', params=params)
+
+
+    def get_information_onoff_exchange_funding_and_loans(self):
+        """
+        Get information on off-exchange funding and loans
+        https://www.kucoin.com/zh-hant/docs/rest/vip-lending/get-information-on-off-exchange-funding-and-loans
+        """
+        return self._request('GET', '/api/v1/otc-loan/loan')
+
+    def get_information_on_accounts_involved_in_off_exchange_loans(self):
+        """
+        Get information on accounts involved in off-exchange loans
+        https://www.kucoin.com/docs/rest/vip-lending/get-information-on-accounts-involved-in-off-exchange-loans
+        """
+        return self._request('GET', '/api/v1/otc-loan/accounts')
+
+    def cancel_hf_order_by_orderid(self, orderId,symbol):
+        """
+        Cancel HF order by orderId
+        https://www.kucoin.com/docs/rest/margin-trading/margin-hf-trade/cancel-hf-order-by-orderid
+        """
+        params = {
+            'symbol': symbol
+        }
+        return self._request('DELETE', '/api/v3/hf/margin/orders/{orderId}'.format(orderId=orderId),params=params)
+
+    def cancel_hf_order_by_clientoid(self, clientOid,symbol):
+        """
+        Cancel HF order by clientOid
+        https://www.kucoin.com/zh-hant/docs/rest/margin-trading/margin-hf-trade/cancel-hf-order-by-clientoid
+        """
+        params = {
+            'symbol': symbol
+        }
+        return self._request('DELETE', '/api/v3/hf/margin/orders/client-order/{clientOid}'.format(clientOid=clientOid),params=params)
+
+    def cancel_all_hf_orders_by_symbol(self, tradeType,symbol):
+        """
+        Cancel all HF orders by symbol
+        https://www.kucoin.com/docs/rest/margin-trading/margin-hf-trade/cancel-all-hf-orders-by-symbol
+        """
+        params = {
+            'symbol': symbol,
+            'tradeType': tradeType
+        }
+        return self._request('DELETE', '/api/v3/hf/margin/orders',params=params)
+
+    def get_active_hf_orders_list(self, tradeType,symbol):
+        """
+        Get Active HF Orders List
+        https://www.kucoin.com/docs/rest/margin-trading/margin-hf-trade/get-active-hf-orders-list
+        """
+        params = {
+            'symbol': symbol,
+            'tradeType': tradeType
+        }
+        return self._request('GET', '/api/v3/hf/margin/orders/active',params=params)
+
+
+    def get_hf_filled_list(self, tradeType,symbol):
+        """
+        Get HF Filled List
+        https://www.kucoin.com/docs/rest/margin-trading/margin-hf-trade/get-hf-filled-list
+        """
+        params = {
+            'symbol': symbol,
+            'tradeType': tradeType
+        }
+        return self._request('GET', '/api/v3/hf/margin/orders/done',params=params)
+
+    def get_hf_order_details_by_orderid(self, orderId,symbol):
+        """
+        Get HF Order details by orderId
+        https://www.kucoin.com/docs/rest/margin-trading/margin-hf-trade/get-hf-order-details-by-orderid
+        """
+        params = {
+            'symbol': symbol,
+        }
+        return self._request('GET', f'/api/v3/hf/margin/orders/{orderId}',params=params)
+
+
+    def get_hf_order_details_by_clientoid(self, clientOid,symbol):
+        """
+        Get HF order details by clientOid
+        https://www.kucoin.com/docs/rest/margin-trading/margin-hf-trade/get-hf-order-details-by-clientoid
+        """
+        params = {
+            'symbol': symbol
+        }
+        return self._request('GET', f'/api/v3/hf/margin/orders/client-order/{clientOid}',params=params)
+
+    def get_hf_transaction_records(self,symbol):
+        """
+        Get HF transaction records
+        https://www.kucoin.com/docs/rest/margin-trading/margin-hf-trade/get-hf-transaction-records
+        """
+        params = {
+            'symbol': symbol
+        }
+        return self._request('GET', f'/api/v3/hf/margin/fills',params=params)
