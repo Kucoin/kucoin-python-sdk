@@ -31,24 +31,24 @@ update
 ----------
 
 - 2024 07/25
-【NEW】GET /api/v3/hf/margin/order/active/symbols: Margin.get_active_hf_order_symbols
-【NEW】GET /api/v3/margin/symbols: Margin.get_cross_margin_trading_pairs_configuration
-【NEW】POST /api/v3/position/update-user-leverage: Margin.modify_leverage_multiplier
-【NEW】GET /api/v1/otc-loan/loan: Margin.get_information_onoff_exchange_funding_and_loans
-【NEW】GET /api/v1/otc-loan/accounts: Margin.get_information_on_accounts_involved_in_off_exchange_loans
-【UPDATE】POST /api/v3/margin/borrow -add isHf: Margin.margin_borrowing
-【UPDATE】POST /api/v3/margin/repay -add isHf: Margin.repayment
-【NEW】POST /api/v3/hf/margin/order: Margin.place_hf_order
-【NEW】POST /api/v3/hf/margin/order/test: Margin.place_hf_order_test
-【NEW】DELETE /api/v3/hf/margin/orders/{orderId}: Margin.cancel_hf_order_by_orderid
-【NEW】DELETE /api/v3/hf/margin/orders/client-order/{clientOid}: Margin.cancel_hf_order_by_clientoid
-【NEW】DELETE /api/v3/hf/margin/orders: Margin.cancel_all_hf_orders_by_symbol
-【NEW】GET /api/v3/hf/margin/orders/active: Margin.get_active_hf_orders_list
-【NEW】GET /api/v3/hf/margin/orders/done: Margin.get_hf_filled_list
-【NEW】GET /api/v3/hf/margin/orders/{orderId}: Margin.get_hf_order_details_by_orderid
-【NEW】GET /api/v3/hf/margin/orders/client-order/{clientOid}: Margin.get_hf_order_details_by_clientoid
-【NEW】GET /api/v3/hf/margin/fills: Margin.get_hf_transaction_records
-【NEW】GET /api/v3/currencies/{currency}: Market.get_currency_detail_v3
+1. 【NEW】GET /api/v3/hf/margin/order/active/symbols: Margin.get_active_hf_order_symbols
+2. 【NEW】GET /api/v3/margin/symbols: Margin.get_cross_margin_trading_pairs_configuration
+3. 【NEW】POST /api/v3/position/update-user-leverage: Margin.modify_leverage_multiplier
+4. 【NEW】GET /api/v1/otc-loan/loan: Margin.get_information_onoff_exchange_funding_and_loans
+5. 【NEW】GET /api/v1/otc-loan/accounts: Margin.get_information_on_accounts_involved_in_off_exchange_loans
+6. 【UPDATE】POST /api/v3/margin/borrow -add isHf: Margin.margin_borrowing
+7. 【UPDATE】POST /api/v3/margin/repay -add isHf: Margin.repayment
+8. 【NEW】POST /api/v3/hf/margin/order: Margin.place_hf_order
+9. 【NEW】POST /api/v3/hf/margin/order/test: Margin.place_hf_order_test
+10. 【NEW】DELETE /api/v3/hf/margin/orders/{orderId}: Margin.cancel_hf_order_by_orderid
+11. 【NEW】DELETE /api/v3/hf/margin/orders/client-order/{clientOid}: Margin.cancel_hf_order_by_clientoid
+12. 【NEW】DELETE /api/v3/hf/margin/orders: Margin.cancel_all_hf_orders_by_symbol
+13. 【NEW】GET /api/v3/hf/margin/orders/active: Margin.get_active_hf_orders_list
+14. 【NEW】GET /api/v3/hf/margin/orders/done: Margin.get_hf_filled_list
+15. 【NEW】GET /api/v3/hf/margin/orders/{orderId}: Margin.get_hf_order_details_by_orderid
+16. 【NEW】GET /api/v3/hf/margin/orders/client-order/{clientOid}: Margin.get_hf_order_details_by_clientoid
+17. 【NEW】GET /api/v3/hf/margin/fills: Margin.get_hf_transaction_records
+18. 【NEW】GET /api/v3/currencies/{currency}: Market.get_currency_detail_v3
 
 
 - 2024 07/07
