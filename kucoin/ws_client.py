@@ -61,3 +61,11 @@ class KucoinWsClient:
         }
         self._conn.topics.remove(topic)
         await self._conn.send_message(req_msg)
+        
+    @property
+    def topics(self) -> set[str]:
+        """Return the set of current topics.
+
+        :return: The set of current topics.
+        """
+        return self._conn.topics
