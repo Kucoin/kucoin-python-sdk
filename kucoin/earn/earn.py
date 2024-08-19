@@ -27,7 +27,7 @@ class EarnData(KucoinBaseRestApi):
         }
         if fromAccountType:
             params['fromAccountType'] = fromAccountType
-        if fromAccountType:
+        if confirmPunishRedeem:
             params['confirmPunishRedeem'] = confirmPunishRedeem
 
         return self._request('DELETE', '/api/v1/earn/orders', params=params)

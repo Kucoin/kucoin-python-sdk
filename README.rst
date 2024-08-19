@@ -29,6 +29,8 @@ Features
 
 update
 ----------
+- 2024 08/19
+1. 【FIX】 Fix the issue with incorrect fields in the parameters.
 
 - 2024 07/25
 1. 【NEW】GET /api/v3/hf/margin/order/active/symbols: Margin.get_active_hf_order_symbols
