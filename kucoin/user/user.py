@@ -443,13 +443,13 @@ class UserData(KucoinBaseRestApi):
 
         if currency:
             params['currency'] = currency
-        if currency:
+        if fromUserId:
             params['fromUserId'] = fromUserId
-        if currency:
+        if fromAccountTag:
             params['fromAccountTag'] = fromAccountTag
-        if currency:
+        if toUserId:
             params['toUserId'] = toUserId
-        if currency:
+        if toAccountTag:
             params['toAccountTag'] = toAccountTag
         return self._request('POST', '/api/v3/accounts/universal-transfer', params=params)
 
