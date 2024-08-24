@@ -14,7 +14,7 @@ setup(
     author_email="arthur.zhang@kucoin.com",
     url='https://github.com/Kucoin/kucoin-python-sdk',
     description="kucoin-api-sdk",
-    install_requires=['requests', 'websockets'],
+    install_requires=['requests', 'websockets', 'aiohttp'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
