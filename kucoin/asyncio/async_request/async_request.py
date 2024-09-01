@@ -15,7 +15,7 @@ try:
     import pkg_resources
 
     version = 'v' + pkg_resources.get_distribution("kucoin-python").version
-except (ModuleNotFoundError, pkg_resources.DistributionNotFound):
+except (ModuleNotFoundError, pkg_resources.DistributionNotFound, NameError):
     version = 'v1.0.0'
 
 
@@ -69,7 +69,7 @@ class KucoinAsyncRestApi(object):
                 hmac.new(self.secret.encode('utf-8'), str_to_sign.encode('utf-8'), hashlib.sha256).digest())
             if self.is_v1api:
                 headers = {
-                    "KC-API-SIGN": sign,
+                    "KC-API-SIGN": sign.decode('utf-8'),
                     "KC-API-TIMESTAMP": str(now_time),
                     "KC-API-KEY": self.key,
                     "KC-API-PASSPHRASE": self.passphrase,
@@ -79,10 +79,10 @@ class KucoinAsyncRestApi(object):
                 passphrase = base64.b64encode(
                     hmac.new(self.secret.encode('utf-8'), self.passphrase.encode('utf-8'), hashlib.sha256).digest())
                 headers = {
-                    "KC-API-SIGN": sign,
+                    "KC-API-SIGN": sign.decode('utf-8'),
                     "KC-API-TIMESTAMP": str(now_time),
                     "KC-API-KEY": self.key,
-                    "KC-API-PASSPHRASE": passphrase,
+                    "KC-API-PASSPHRASE": passphrase.decode('utf-8'),
                     "Content-Type": "application/json",
                     "KC-API-KEY-VERSION": "2"
                 }
