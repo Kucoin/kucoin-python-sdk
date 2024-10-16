@@ -543,6 +543,37 @@ class MarketData(KucoinBaseRestApi):
             params.update(kwargs)
         return self._request('GET', '/api/v2/symbols', params=params)
 
+    def get_symbol_detail(self, symbol):
+        """
+        get detail currency pairs for trading. If you want to get the market information of the trading symbol, please use get_symbol_list_v2
+        https://www.kucoin.com/docs/rest/spot-trading/market-data/get-symbol-detail
+        :return
+        {
+            "data" : {
+              "quoteMinSize" : "0.1",
+              "quoteCurrency" : "USDT",
+              "feeCurrency" : "USDT",
+              "symbol" : "BTC-USDT",
+              "market" : "USDS",
+              "baseMaxSize" : "10000000000",
+              "baseIncrement" : "0.00000001",
+              "quoteIncrement" : "0.000001",
+              "priceIncrement" : "0.1",
+              "priceLimitRate" : "0.1",
+              "minFunds" : "0.1",
+              "isMarginEnabled" : true,
+              "enableTrading" : true,
+              "baseCurrency" : "BTC",
+              "baseMinSize" : "0.00001",
+              "name" : "BTC-USDT",
+              "quoteMaxSize" : "99999999"
+            },
+            "code" : "200000"
+        }
+        """
+        return self._request('GET', f'/api/v2/symbols/{symbol}')
+
+
     def get_currency_detail_v3(self, currency,chain=None):
         """
         Get Currency Detail
