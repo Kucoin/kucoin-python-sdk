@@ -376,7 +376,7 @@ class UserData(KucoinBaseRestApi):
         params['clientOid'] = clientOid
         return self._request('POST', '/api/v2/accounts/sub-transfer', params=params)
 
-    def inner_transfer(self, currency, from_payer, to_payee, amount, clientOid=''):
+    def inner_transfer(self, currency, from_payer, to_payee, amount, clientOid='', from_tag=None, to_tag=None):
         """
         https://docs.kucoin.com/#inner-transfer
         :param currency: currency (Mandatory)
@@ -389,6 +389,10 @@ class UserData(KucoinBaseRestApi):
         :type: str
         :param clientOid: Unique order id created by users to identify their orders, e.g. UUID. (Mandatory)
         :type: str
+        :param from_tag: Trading pair, required when the payment account type is isolated, e.g.: BTC-USDT (optional)
+        :type: str
+        :param to_tag: Trading pair, required when the payment account type is isolated, e.g.: BTC-USDT (optional)
+        :type: str
         :return:
         {
             "orderId": "5bd6e9286d99522a52e458de"
@@ -400,6 +404,12 @@ class UserData(KucoinBaseRestApi):
             'to': to_payee,
             'amount': amount
         }
+
+        if from_tag:
+            params['fromTag'] = from_tag
+        if to_tag:
+            params['toTag'] = to_tag
+
         if not clientOid:
             clientOid = self.return_unique_id
         params['clientOid'] = clientOid
@@ -427,22 +437,21 @@ class UserData(KucoinBaseRestApi):
             params['chain'] = chain
         return self._request('POST', '/api/v1/deposit-addresses', params=params)
 
-    def flex_transfer(self, clientOid,amount,fromAccountType,type,toAccountType,
-                          currency=None,fromUserId=None,fromAccountTag=None,toUserId=None,toAccountTag=None):
+    def flex_transfer(self, clientOid, amount, fromAccountType, type, toAccountType,
+                      currency, fromUserId=None, fromAccountTag=None, toUserId=None, toAccountTag=None):
         """
         FlexTransfer
         https://www.kucoin.com/docs/rest/funding/transfer/flextransfer
         """
         params = {
-                "clientOid": clientOid,
-                "type": type,
-                "amount": amount,
-                "fromAccountType": fromAccountType,
-                "toAccountType": toAccountType
-            }
+            "clientOid": clientOid,
+            "type": type,
+            "amount": amount,
+            "fromAccountType": fromAccountType,
+            "toAccountType": toAccountType,
+            "currency": currency,
+        }
 
-        if currency:
-            params['currency'] = currency
         if fromUserId:
             params['fromUserId'] = fromUserId
         if fromAccountTag:

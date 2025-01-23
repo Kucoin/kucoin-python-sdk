@@ -11,8 +11,6 @@ The KuCoin Universal SDK offers:
 - Enhanced performance and stability.
 - Continued support and updates.
 
-👉 **New SDK Repository**: [https://github.com/Kucoin/kucoin-universal-sdk](https://github.com/Kucoin/kucoin-universal-sdk)
-
 We appreciate your understanding and encourage you to migrate to the new SDK for a better development experience. Should you have any questions or require assistance, feel free to reach out to us.
 
 
